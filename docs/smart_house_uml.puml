@@ -5,158 +5,200 @@ skinparam classAttributeIconSize 0
 skinparam classFontSize 12
 skinparam packageFontSize 14
 
-package "Smart House System" {
-
-    enum RoomType {
-        LIVING_ROOM
-        BEDROOM
-        CORRIDOR
-        RESTROOM
-        KITCHEN
-        BALCONY
-    }
-
-    enum DeviceStatus {
-        ONLINE
-        OFFLINE
-    }
-
-    class RoomDescriptor {
-        -roomName: string
-        -roomNumber: int
-        -roomType: RoomType
-        --
-        +RoomDescriptor(name: string, number: int, type: RoomType)
-        +~RoomDescriptor()
-        +RoomDescriptor(other: const RoomDescriptor&)
-        +operator=(other: const RoomDescriptor&): RoomDescriptor&
-        --
-        +getName(): string
-        +getNumber(): int
-        +getType(): RoomType
-        +setName(name: string): void
-        +setNumber(number: int): void
-        +setType(type: RoomType): void
-    }
-
-    abstract class SmartDevice {
-        #deviceId: int
-        #deviceName: string
-        #status: DeviceStatus
-        --
-        +SmartDevice(id: int, name: string)
-        +{abstract} ~SmartDevice()
-        +SmartDevice(other: const SmartDevice&)
-        +operator=(other: const SmartDevice&): SmartDevice&
-        --
-        +getId(): int
-        +getName(): string
-        +getStatus(): DeviceStatus
-        +setStatus(status: DeviceStatus): void
-        +{abstract} turnOn(): void
-        +{abstract} turnOff(): void
-        +{abstract} getInfo(): string
-    }
-
-    class ActiveDevice {
-        -isActivated: bool
-        -mainFunction: string
-        --
-        +ActiveDevice(id: int, name: string, function: string)
-        +~ActiveDevice()
-        +ActiveDevice(other: const ActiveDevice&)
-        +operator=(other: const ActiveDevice&): ActiveDevice&
-        --
-        +activate(): void
-        +deactivate(): void
-        +getActivationStatus(): bool
-        +getMainFunction(): string
-        +turnOn(): void
-        +turnOff(): void
-        +getInfo(): string
-    }
-
-    class SensorDevice {
-        -sensorValue: double
-        -measurementUnit: string
-        --
-        +SensorDevice(id: int, name: string, unit: string)
-        +~SensorDevice()
-        +SensorDevice(other: const SensorDevice&)
-        +operator=(other: const SensorDevice&): SensorDevice&
-        --
-        +getValue(): double
-        +getUnit(): string
-        +updateValue(value: double): void
-        +turnOn(): void
-        +turnOff(): void
-        +getInfo(): string
-    }
-
-    class HybridDevice {
-        --
-        +HybridDevice(id: int, name: string, function: string, unit: string)
-        +~HybridDevice()
-        +HybridDevice(other: const HybridDevice&)
-        +operator=(other: const HybridDevice&): HybridDevice&
-        --
-        +turnOn(): void
-        +turnOff(): void
-        +getInfo(): string
-    }
-
-    class SmartSpeaker {
-        -roomDesc: RoomDescriptor
-        -devices: vector<shared_ptr<SmartDevice>>
-        --
-        +SmartSpeaker(roomName: string, roomNumber: int, roomType: RoomType)
-        +~SmartSpeaker()
-        +SmartSpeaker(other: const SmartSpeaker&)
-        +operator=(other: const SmartSpeaker&): SmartSpeaker&
-        --
-        +addDevice(device: shared_ptr<SmartDevice>): void
-        +removeDevice(deviceId: int): void
-        +checkAndUpdateDevices(): void
-        +getActiveDevices(): vector<shared_ptr<SmartDevice>>
-        +getRoomDescriptor(): RoomDescriptor
-        +getRoomName(): string
-        +getDeviceCount(): int
-    }
-
-    class SmartHome {
-        -speakers: map<string, shared_ptr<SmartSpeaker>>
-        --
-        +SmartHome()
-        +~SmartHome()
-        +SmartHome(other: const SmartHome&)
-        +operator=(other: const SmartHome&): SmartHome&
-        --
-        +addSpeaker(speaker: shared_ptr<SmartSpeaker>): void
-        +removeSpeaker(roomName: string): void
-        +operator[](roomName: const string&): shared_ptr<SmartSpeaker>
-        +operator[](roomName: const string&): const shared_ptr<SmartSpeaker>
-        +manageAllDevices(): void
-        +getTotalDeviceCount(): int
-        +getRoomNames(): vector<string>
-    }
-
+class SmartSpeaker {
+    -roomDesc: RoomDescriptor
+    -devices: vector<shared_ptr<SmartDevice>>
+    --
+    +SmartSpeaker(roomName: string, roomNumber: int, roomType: RoomType)
+    +~SmartSpeaker()
+    +SmartSpeaker(other: const SmartSpeaker&)
+    +operator=(other: const SmartSpeaker&): SmartSpeaker&
+    --
+    +addDevice(device: shared_ptr<SmartDevice>): void
+    +removeDevice(deviceId: int): void
+    +checkAndUpdateDevices(): void
+    +getActiveDevices(): vector<shared_ptr<SmartDevice>>
+    +getRoomDescriptor(): RoomDescriptor
+    +getRoomName(): string
+    +getDeviceCount(): int
 }
+
+class SmartHome {
+    -speakers: map<string, shared_ptr<SmartSpeaker>>
+    --
+    +SmartHome()
+    +~SmartHome()
+    +SmartHome(other: const SmartHome&)
+    +operator=(other: const SmartHome&): SmartHome&
+    --
+    +addSpeaker(speaker: shared_ptr<SmartSpeaker>): void
+    +removeSpeaker(roomName: string): void
+    +operator[](roomName: const string&): shared_ptr<SmartSpeaker>
+    +operator[](roomName: const string&): const shared_ptr<SmartSpeaker>
+    +manageAllDevices(): void
+    +getTotalDeviceCount(): int
+    +getRoomNames(): vector<string>
+}
+
+class RoomDescriptor {
+    -roomName: string
+    -roomNumber: int
+    -roomType: RoomType
+    --
+    +RoomDescriptor(name: string, number: int, type: RoomType)
+    +~RoomDescriptor()
+    +RoomDescriptor(other: const RoomDescriptor&)
+    +operator=(other: const RoomDescriptor&): RoomDescriptor&
+    --
+    +getName(): string
+    +getNumber(): int
+    +getType(): RoomType
+    +setName(name: string): void
+    +setNumber(number: int): void
+    +setType(type: RoomType): void
+}
+
+enum RoomType {
+    LIVING_ROOM
+    BEDROOM
+    CORRIDOR
+    RESTROOM
+    KITCHEN
+    BALCONY
+}
+
+abstract class SmartDevice {
+    #deviceId: int
+    #deviceName: string
+    #status: DeviceStatus
+    --
+    +SmartDevice(id: int, name: string)
+    +{abstract} ~SmartDevice()
+    +SmartDevice(other: const SmartDevice&)
+    +operator=(other: const SmartDevice&): SmartDevice&
+    --
+    +getId(): int
+    +getName(): string
+    +getStatus(): DeviceStatus
+    +setStatus(status: DeviceStatus): void
+    +{abstract} turnOn(): void
+    +{abstract} turnOff(): void
+    +{abstract} getInfo(): string
+}
+
+enum DeviceStatus {
+    ONLINE
+    OFFLINE
+}
+
+interface IActiveDevice {
+    +{abstract} ~IActiveDevice()
+    +{abstract} activate(): void
+    +{abstract} deactivate(): void
+    +{abstract} getActivationStatus(): bool
+    +{abstract} getMainFunction(): string
+}
+
+interface ISensorDevice {
+    +{abstract} ~ISensorDevice()
+    +{abstract} getValue(): double
+    +{abstract} getUnit(): string
+    +{abstract} updateValue(value: double): void
+}
+
+class ActiveDevice {
+    -isActivated: bool
+    -mainFunction: string
+    --
+    +ActiveDevice(id: int, name: string, function: string)
+    +~ActiveDevice()
+    +ActiveDevice(other: const ActiveDevice&)
+    +operator=(other: const ActiveDevice&): ActiveDevice&
+    --
+    +activate(): void
+    +deactivate(): void
+    +getActivationStatus(): bool
+    +getMainFunction(): string
+    +turnOn(): void
+    +turnOff(): void
+    +getInfo(): string
+}
+
+class SensorDevice {
+    -sensorValue: double
+    -measurementUnit: string
+    --
+    +SensorDevice(id: int, name: string, unit: string)
+    +~SensorDevice()
+    +SensorDevice(other: const SensorDevice&)
+    +operator=(other: const SensorDevice&): SensorDevice&
+    --
+    +getValue(): double
+    +getUnit(): string
+    +updateValue(value: double): void
+    +turnOn(): void
+    +turnOff(): void
+    +getInfo(): string
+}
+
+class HybridDevice {
+    -isActivated: bool
+    -mainFunction: string
+    -sensorValue: double
+    -measurementUnit: string
+    --
+    +HybridDevice(id: int, name: string, function: string, unit: string)
+    +~HybridDevice()
+    +HybridDevice(other: const HybridDevice&)
+    +operator=(other: const HybridDevice&): HybridDevice&
+    --
+    +activate(): void
+    +deactivate(): void
+    +getActivationStatus(): bool
+    +getMainFunction(): string
+    +getValue(): double
+    +getUnit(): string
+    +updateValue(value: double): void
+    +turnOn(): void
+    +turnOff(): void
+    +getInfo(): string
+}
+
+'Вёрстка
+RoomDescriptor -[hidden]right- SmartSpeaker
+SmartDevice -[hidden]down- SmartSpeaker
+ActiveDevice -[hidden]down- IActiveDevice
+SensorDevice -[hidden]down- ISensorDevice
+ActiveDevice -[hidden]down- SmartDevice
+SensorDevice -[hidden]down- SmartDevice
+SensorDevice -[hidden]down- HybridDevice
+ActiveDevice -[hidden]down- HybridDevice
+DeviceStatus -[hidden]right- SmartDevice
 
 ' Отношения
 RoomDescriptor --> RoomType : uses
 SmartDevice --> DeviceStatus : uses
+
+' Наследование классов от SmartDevice
 SmartDevice <|-- ActiveDevice : inherits
 SmartDevice <|-- SensorDevice : inherits
-ActiveDevice <|-- HybridDevice : inherits
-SensorDevice <|-- HybridDevice : inherits
+SmartDevice <|-- HybridDevice : inherits
 
+' Реализация интерфейсов
+IActiveDevice <|.. ActiveDevice : implements
+ISensorDevice <|.. SensorDevice : implements
+IActiveDevice <|.. HybridDevice : implements
+ISensorDevice <|.. HybridDevice : implements
+
+' Композиция и агрегация
 SmartSpeaker *-- RoomDescriptor : contains
 SmartSpeaker o-- SmartDevice : aggregates
 SmartHome o-- SmartSpeaker : aggregates
 
 ' Примечания
 note right of SmartHome : Использует std::map для\nавтоматической сортировки\nколонок по имени комнаты
-note bottom of HybridDevice : Множественное наследование\nот ActiveDevice и SensorDevice
-note right of SmartSpeaker : Метод checkAndUpdateDevices()\nобходит устройства и включает\nвыключенные
+note right of HybridDevice : Реализует оба интерфейса:\nIActiveDevice и ISensorDevice\nИзбегает diamond problem
+note bottom of IActiveDevice : Интерфейс для\nактивных устройств
+note bottom of ISensorDevice : Интерфейс для\nустройств-датчиков
 
 @enduml 

@@ -47,12 +47,31 @@ classDiagram
         +virtual string getInfo() const = 0
     }
     
+    class IActiveDevice {
+        <<interface>>
+        +virtual ~IActiveDevice() = 0
+        +virtual void activate() = 0
+        +virtual void deactivate() = 0
+        +virtual bool getActivationStatus() const = 0
+        +virtual string getMainFunction() const = 0
+    }
+    
+    class ISensorDevice {
+        <<interface>>
+        +virtual ~ISensorDevice() = 0
+        +virtual double getValue() const = 0
+        +virtual string getUnit() const = 0
+        +virtual void updateValue(double value) = 0
+    }
+    
     class ActiveDevice {
         -bool isActivated
         -string mainFunction
         +ActiveDevice(int id, string name, string function)
         +void activate()
         +void deactivate()
+        +bool getActivationStatus() const
+        +string getMainFunction() const
         +void turnOn() override
         +void turnOff() override
         +string getInfo() const override
@@ -71,7 +90,18 @@ classDiagram
     }
     
     class HybridDevice {
+        -bool isActivated
+        -string mainFunction
+        -double sensorValue
+        -string measurementUnit
         +HybridDevice(int id, string name, string function, string unit)
+        +void activate()
+        +void deactivate()
+        +bool getActivationStatus() const
+        +string getMainFunction() const
+        +double getValue() const
+        +string getUnit() const
+        +void updateValue(double value)
         +void turnOn() override
         +void turnOff() override
         +string getInfo() const override
@@ -102,8 +132,11 @@ classDiagram
     SmartDevice --> DeviceStatus : uses
     SmartDevice <|-- ActiveDevice : inherits
     SmartDevice <|-- SensorDevice : inherits
-    ActiveDevice <|-- HybridDevice : inherits
-    SensorDevice <|-- HybridDevice : inherits
+    SmartDevice <|-- HybridDevice : inherits
+    IActiveDevice <|.. ActiveDevice : implements
+    ISensorDevice <|.. SensorDevice : implements
+    IActiveDevice <|.. HybridDevice : implements
+    ISensorDevice <|.. HybridDevice : implements
     SmartSpeaker *-- RoomDescriptor : contains
     SmartSpeaker o-- SmartDevice : aggregates
     SmartHome o-- SmartSpeaker : aggregates
@@ -128,7 +161,7 @@ classDiagram
 - Автоматическая сортировка колонок по имени комнаты (std::map)
 - Перегрузка операторов `<<` и `[]` для удобного доступа
 - Автоматическое включение выключенных устройств
-- Множественное наследование для гибридных устройств
+- Интерфейсный подход для гибридных устройств (избегает diamond problem)
 
 ## 📂 Структура проекта
 
