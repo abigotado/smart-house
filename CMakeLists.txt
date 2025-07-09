@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Приложение
 add_subdirectory(app)
 
-# Примеры (опционально)
-add_subdirectory(examples)
+# Примеры (опционально) - закомментировано, пока нет CMakeLists.txt
+# add_subdirectory(examples)
 
 # Тесты (опционально)
 add_subdirectory(tests) 

@@ -4,6 +4,10 @@ project(devices)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Базовые компоненты
+add_subdirectory(device)
+add_subdirectory(interfaces)
+
 # Конкретные устройства
 add_subdirectory(vacuum_cleaner)
 add_subdirectory(smart_light)

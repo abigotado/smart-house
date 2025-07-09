@@ -13,9 +13,9 @@
 ```log
 smart-house/
 ├── app/                          # Основное приложение
-│   ├── device/                   # Абстрактный базовый класс Device
-│   ├── interfaces/               # Интерфейсы IActivatable, IMeasurable
-│   ├── devices/                  # Конкретные устройства
+│   ├── devices/                  # Все что связано с устройствами
+│   │   ├── device/               # Абстрактный базовый класс Device
+│   │   ├── interfaces/           # Интерфейсы IActivatable, IMeasurable
 │   │   ├── vacuum_cleaner/       # Пылесос
 │   │   ├── smart_light/          # Умная лампа
 │   │   ├── thermometer/          # Термометр

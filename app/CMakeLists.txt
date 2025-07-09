@@ -4,11 +4,7 @@ project(smart_house_app)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Базовые компоненты
-add_subdirectory(device)
-add_subdirectory(interfaces)
-
-# Конкретные устройства
+# Устройства (включая базовый класс и интерфейсы)
 add_subdirectory(devices)
 
 # Управление
