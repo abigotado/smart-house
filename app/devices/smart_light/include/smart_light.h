@@ -4,25 +4,29 @@
 #include "../../../shared/include/activatable.h"
 
 namespace smart_house {
-    class SmartLight : public Device, public IActivatable {
-        public:
-            using Device::Device;
 
-            // Интерфейс IActivatable
-            void turn_on() noexcept override;
-            void turn_off() noexcept override;
-            [[nodiscard]] IActivatable::PowerState get_power_state() const noexcept override;
+/**
+ * @brief Умная лампочка с регулируемой яркостью
+ */
+class SmartLight : public Device, public IActivatable {
+    public:
+        using Device::Device;
 
-            // Виртуальные методы из Device
-            std::shared_ptr<Device> clone() const override;
-            std::string to_string() const override;
+        // Интерфейс IActivatable
+        void turn_on() noexcept override;
+        void turn_off() noexcept override;
+        [[nodiscard]] IActivatable::PowerState get_power_state() const noexcept override;
 
-            // Собственные методы SmartLight
-            void set_brightness(int brightness);
-            [[nodiscard]] int get_brightness() const noexcept;
+        std::shared_ptr<Device> clone() const override;
+        std::string to_string() const override;
 
-        private:
-            IActivatable::PowerState power_state = IActivatable::PowerState::OFF;
-            int brightness = 100;
-    };
+        /// Устанавливает яркость (0-100)
+        void set_brightness(int brightness);
+        [[nodiscard]] int get_brightness() const noexcept;
+
+    private:
+        IActivatable::PowerState power_state_ = IActivatable::PowerState::OFF;
+        int brightness_ = 100;
+};
+
 }

@@ -15,7 +15,7 @@ skinparam wrapWidth 320
 title "Система Умного Дома - Диаграмма Классов"
 
 class SmartHome {
-    - speakers : map<string, Speaker>
+    - speakers_ : map<string, Speaker>
     --
     + add_speaker(name, room_type) : bool
     + remove_speaker(name) : bool
@@ -31,40 +31,43 @@ class SmartHome {
 }
 
 class Speaker {
-    - devices : map<string, shared_ptr<Device>>
-    - room : Room
+    - name_ : string
+    - devices_ : map<string, shared_ptr<Device>>
+    - room_ : Room
     --
-    + Speaker(room_type)
+    + Speaker(speaker_name, room_name, room_number, room_type)
+    + get_name() : const string&
     + add_device(device) : bool
     + remove_device(id) : bool
     + get_device(id) : shared_ptr<Device>
     + get_device(id) : const shared_ptr<Device>
     + get_all_devices() : const map<string, shared_ptr<Device>>&
-    + activate_all_devices() : void
-    + deactivate_all_devices() : void
+    + check_and_activate_devices() : void
     + get_room_type() : RoomType
+    + get_room() : const Room&
     + get_device_count() : size_t
     + to_string() : string
 }
 
 class "Speaker::Room" as Room {
-    - room_type : RoomType
-    - area : double
-    - description : string
+    - name_ : string
+    - room_number_ : int
+    - room_type_ : RoomType
     --
-    + Room(type, area, desc)
+    + {static} room_type_to_string(type) : string
+    + Room(name, room_number, type)
+    + get_name() : const string&
+    + get_room_number() : int
     + get_room_type() : RoomType
-    + get_area() : double
-    + get_description() : const string&
-    + set_description(desc) : void
+    + to_string() : string
     --
-    + enum RoomType { LIVING_ROOM, BEDROOM, CHILDREN_ROOM, RESTROOM, KITCHEN, BALCONY }
+    + enum RoomType { LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY }
 }
 
 abstract class Device {
-    # id : const string
-    # name : const string
-    # status : DeviceStatus
+    # id_ : const string
+    # name_ : const string
+    # status_ : DeviceStatus
     --
     + Device(id, name)
     + ~Device()
@@ -123,8 +126,8 @@ interface IMeasurable {
 
 
 class VacuumCleaner {
-    - power_state : PowerState
-    - battery_level : int
+    - power_state_ : PowerState
+    - battery_level_ : int
     --
     + VacuumCleaner(id, name)
     + turn_on() : void
@@ -136,8 +139,8 @@ class VacuumCleaner {
 }
 
 class SmartLight {
-    - power_state : PowerState
-    - brightness : int
+    - power_state_ : PowerState
+    - brightness_ : int
     --
     + SmartLight(id, name)
     + turn_on() : void
@@ -150,9 +153,9 @@ class SmartLight {
 }
 
 class Thermometer {
-    - temperature : double
-    - is_calibrated : bool
-    - temp_manager : TemperatureManager
+    - temperature_ : double
+    - is_calibrated_ : bool
+    - temp_manager_ : TemperatureManager
     --
     + Thermometer(id, name, unit = CELSIUS)
     + read_value() : double
@@ -164,11 +167,11 @@ class Thermometer {
 }
 
 class SmartKettle {
-    - power_state : PowerState
-    - temperature : double
-    - calibrated : bool
-    - target_temp : double
-    - temp_manager : TemperatureManager
+    - power_state_ : PowerState
+    - temperature_ : double
+    - calibrated_ : bool
+    - target_temp_ : double
+    - temp_manager_ : TemperatureManager
     --
     + SmartKettle(id, name, unit = CELSIUS)
     + turn_on() : void
