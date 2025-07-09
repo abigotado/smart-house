@@ -1,25 +1,30 @@
 # Smart House Management System
 
-Система управления умным домом на C++17 с использованием современных принципов ООП.
+Система управления умным домом на C++20 с использованием современных принципов ООП.
 
 ## Требования
 
-- C++17 или выше
-- CMake 3.15+
-- Компилятор: GCC 7+, Clang 5+, MSVC 2017+
+- C++20 или выше
+- CMake 3.20+
+- Компилятор: GCC 10+, Clang 10+, MSVC 2019+
 
 ## Структура проекта
 
 ```
 smart-house/
-├── include/smart_house/          # Заголовочные файлы
-│   ├── device/                   # Интерфейсы и базовые классы
-│   ├── home/                     # Класс SmartHome
-│   ├── room/                     # Enums и типы комнат
-│   └── speaker/                  # Класс Speaker
-├── src/                          # Реализация
+├── app/                          # Основное приложение
+│   ├── device/                   # Абстрактный базовый класс Device
+│   ├── interfaces/               # Интерфейсы IActivatable, IMeasurable
+│   ├── devices/                  # Конкретные устройства
+│   │   ├── vacuum_cleaner/       # Пылесос
+│   │   ├── smart_light/          # Умная лампа
+│   │   ├── thermometer/          # Термометр
+│   │   └── smart_kettle/         # Умный чайник
+│   ├── speaker/                  # Класс Speaker с вложенным Room
+│   └── home/                     # Класс SmartHome
 ├── tests/                        # Модульные тесты
 ├── docs/                         # Документация и UML
+├── examples/                     # Примеры использования
 └── CMakeLists.txt               # Конфигурация сборки
 ```
 
@@ -35,7 +40,7 @@ make
 
 ```bash
 # Основная программа
-./smart_house_demo
+./app/smart_house_demo
 
 # Тесты
 ./tests/smart_house_tests
@@ -45,26 +50,31 @@ make
 
 ```bash
 # Проверка утечек памяти (Linux/macOS)
-valgrind --leak-check=full ./smart_house_demo
+valgrind --leak-check=full ./app/smart_house_demo
 valgrind --leak-check=full ./tests/smart_house_tests
 ```
 
 ## Основные компоненты
 
-- **IDevice** - базовый интерфейс для всех устройств
-- **IActiveDevice** - интерфейс для активных устройств (включение/выключение)
-- **ISensorDevice** - интерфейс для сенсорных устройств (чтение данных)
-- **Device** - абстрактный базовый класс
+- **Device** - абстрактный базовый класс для всех устройств
+- **IActivatable** - интерфейс для активных устройств (включение/выключение)
+- **IMeasurable** - интерфейс для измерительных устройств (чтение данных)
+- **VacuumCleaner** - пылесос (активное устройство)
+- **SmartLight** - умная лампа (активное устройство)
+- **Thermometer** - термометр (измерительное устройство)
+- **SmartKettle** - умный чайник (активное + измерительное устройство)
 - **Speaker** - управление устройствами в комнате (с вложенным классом Room)
 - **SmartHome** - главный класс системы
 
 ## Пример использования
 
 ```cpp
-#include "smart_house/SmartHome.h"
-#include "smart_house/devices/SmartKettle.h"
+#include "app/home/include/smart_home.h"
+#include "app/devices/smart_kettle/include/smart_kettle.h"
 
 int main() {
+    using namespace smart_house;
+    
     SmartHome home;
     
     // Добавление комнаты
