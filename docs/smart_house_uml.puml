@@ -14,46 +14,46 @@ title "Система Умного Дома - Диаграмма Классов"
 class SmartHome {
     - speakers : map<string, Speaker>
     --
-    + addSpeaker(name, roomType) : bool
-    + removeSpeaker(name) : bool
-    + getSpeaker(name) : Speaker*
-    + getSpeaker(name) : const Speaker*
-    + getAllSpeakers() : const map<string, Speaker>&
-    + getSpeakerCount() : size_t
-    + activateAllSpeakers() : void
-    + toString() : string
+    + add_speaker(name, room_type) : bool
+    + remove_speaker(name) : bool
+    + get_speaker(name) : Speaker*
+    + get_speaker(name) : const Speaker*
+    + get_all_speakers() : const map<string, Speaker>&
+    + get_speaker_count() : size_t
+    + activate_all_speakers() : void
+    + to_string() : string
     + operator[](name) : Speaker&
     + operator[](name) : const Speaker&
-    + operator<<(os, smartHome) : ostream&
+    + operator<<(os, smart_home) : ostream&
 }
 
 class Speaker {
     - devices : map<string, shared_ptr<Device>>
     - room : Room
     --
-    + Speaker(roomType)
-    + addDevice(device) : bool
-    + removeDevice(id) : bool
-    + getDevice(id) : shared_ptr<Device>
-    + getDevice(id) : const shared_ptr<Device>
-    + getAllDevices() : const map<string, shared_ptr<Device>>&
-    + activateAllDevices() : void
-    + deactivateAllDevices() : void
-    + getRoomType() : RoomType
-    + getDeviceCount() : size_t
-    + toString() : string
+    + Speaker(room_type)
+    + add_device(device) : bool
+    + remove_device(id) : bool
+    + get_device(id) : shared_ptr<Device>
+    + get_device(id) : const shared_ptr<Device>
+    + get_all_devices() : const map<string, shared_ptr<Device>>&
+    + activate_all_devices() : void
+    + deactivate_all_devices() : void
+    + get_room_type() : RoomType
+    + get_device_count() : size_t
+    + to_string() : string
 }
 
 class "Speaker::Room" as Room {
-    - roomType : RoomType
+    - room_type : RoomType
     - area : double
     - description : string
     --
     + Room(type, area, desc)
-    + getRoomType() : RoomType
-    + getArea() : double
-    + getDescription() : const string&
-    + setDescription(desc) : void
+    + get_room_type() : RoomType
+    + get_area() : double
+    + get_description() : const string&
+    + set_description(desc) : void
     --
     + enum RoomType { LIVING_ROOM, BEDROOM, CHILDREN_ROOM, RESTROOM, KITCHEN, BALCONY }
 }
@@ -61,57 +61,60 @@ class "Speaker::Room" as Room {
 abstract class Device {
     # id : const string
     # name : const string
-    # status : Status
+    # status : DeviceStatus
     --
     + Device(id, name)
-    + getId() : const string&
-    + getName() : const string&
-    + getStatus() : Status
-    + setStatus(status) : void
-    + toString() : string
-    + {abstract} clone() : unique_ptr<Device>
+    + ~Device()
+    + get_id() : const string&
+    + get_name() : const string&
+    + get_status() : DeviceStatus
+    + set_status(status) : void
+    + to_string() : string
+    + {abstract} clone() : shared_ptr<Device>
     --
-    + enum Status { ONLINE, OFFLINE }
+    + enum DeviceStatus { ONLINE, OFFLINE }
 }
 
 interface IActivatable {
-    + {abstract} turnOn() : bool
-    + {abstract} turnOff() : bool
-    + {abstract} isOn() : bool
+    + ~IActivatable()
+    + {abstract} turn_on() : void
+    + {abstract} turn_off() : void
+    + {abstract} get_power_state() : PowerState
     --
     + enum PowerState { ON, OFF }
 }
 
 interface IMeasurable {
-    + {abstract} readValue() : double
-    + {abstract} getUnit() : const string&
-    + {abstract} isCalibrated() : bool
-    + {abstract} calibrate() : bool
+    + ~IMeasurable()
+    + {abstract} read_value() : double
+    + {abstract} get_unit() : const string&
+    + {abstract} is_calibrated() : bool
+    + {abstract} calibrate() : void
 }
 
 class VacuumCleaner {
-    - powerState : PowerState
-    - batteryLevel : int
+    - power_state : PowerState
+    - battery_level : int
     --
     + VacuumCleaner(id, name)
-    + turnOn() : bool
-    + turnOff() : bool
-    + isOn() : bool
-    + getBatteryLevel() : int
-    + clone() : unique_ptr<Device>
+    + turn_on() : void
+    + turn_off() : void
+    + get_power_state() : PowerState
+    + get_battery_level() : int
+    + clone() : shared_ptr<Device>
 }
 
 class SmartLight {
-    - powerState : PowerState
+    - power_state : PowerState
     - brightness : int
     --
     + SmartLight(id, name)
-    + turnOn() : bool
-    + turnOff() : bool
-    + isOn() : bool
-    + setBrightness(level) : bool
-    + getBrightness() : int
-    + clone() : unique_ptr<Device>
+    + turn_on() : void
+    + turn_off() : void
+    + get_power_state() : PowerState
+    + set_brightness(level) : bool
+    + get_brightness() : int
+    + clone() : shared_ptr<Device>
 }
 
 class Thermometer {
@@ -119,29 +122,29 @@ class Thermometer {
     - calibrated : bool
     --
     + Thermometer(id, name)
-    + readValue() : double
-    + getUnit() : const string&
-    + isCalibrated() : bool
-    + calibrate() : bool
-    + clone() : unique_ptr<Device>
+    + read_value() : double
+    + get_unit() : const string&
+    + is_calibrated() : bool
+    + calibrate() : void
+    + clone() : shared_ptr<Device>
 }
 
 class SmartKettle {
-    - powerState : PowerState
+    - power_state : PowerState
     - temperature : double
     - calibrated : bool
-    - targetTemp : double
+    - target_temp : double
     --
     + SmartKettle(id, name)
-    + turnOn() : bool
-    + turnOff() : bool
-    + isOn() : bool
-    + readValue() : double
-    + getUnit() : const string&
-    + isCalibrated() : bool
-    + calibrate() : bool
-    + setTargetTemperature(temp) : bool
-    + clone() : unique_ptr<Device>
+    + turn_on() : void
+    + turn_off() : void
+    + get_power_state() : PowerState
+    + read_value() : double
+    + get_unit() : const string&
+    + is_calibrated() : bool
+    + calibrate() : void
+    + set_target_temperature(temp) : bool
+    + clone() : shared_ptr<Device>
 }
 
 ' Горизонтальное размещение интерфейсов
