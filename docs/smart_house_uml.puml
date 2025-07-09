@@ -2,203 +2,180 @@
 
 !theme plain
 skinparam classAttributeIconSize 0
-skinparam classFontSize 12
-skinparam packageFontSize 14
+skinparam classFontSize 9
+skinparam packageFontSize 11
+skinparam dpi 150
+skinparam linetype ortho
+skinparam nodesep 10
+skinparam ranksep 30
 
-class SmartSpeaker {
-    -roomDesc: RoomDescriptor
-    -devices: vector<shared_ptr<SmartDevice>>
-    --
-    +SmartSpeaker(roomName: string, roomNumber: int, roomType: RoomType)
-    +~SmartSpeaker()
-    +SmartSpeaker(other: const SmartSpeaker&)
-    +operator=(other: const SmartSpeaker&): SmartSpeaker&
-    --
-    +addDevice(device: shared_ptr<SmartDevice>): void
-    +removeDevice(deviceId: int): void
-    +checkAndUpdateDevices(): void
-    +getActiveDevices(): vector<shared_ptr<SmartDevice>>
-    +getRoomDescriptor(): RoomDescriptor
-    +getRoomName(): string
-    +getDeviceCount(): int
-}
+title "Система Умного Дома - Диаграмма Классов"
 
 class SmartHome {
-    -speakers: map<string, shared_ptr<SmartSpeaker>>
+    - speakers : map<string, Speaker>
     --
-    +SmartHome()
-    +~SmartHome()
-    +SmartHome(other: const SmartHome&)
-    +operator=(other: const SmartHome&): SmartHome&
-    --
-    +addSpeaker(speaker: shared_ptr<SmartSpeaker>): void
-    +removeSpeaker(roomName: string): void
-    +operator[](roomName: const string&): shared_ptr<SmartSpeaker>
-    +operator[](roomName: const string&): const shared_ptr<SmartSpeaker>
-    +manageAllDevices(): void
-    +getTotalDeviceCount(): int
-    +getRoomNames(): vector<string>
+    + addSpeaker(name, roomType) : bool
+    + removeSpeaker(name) : bool
+    + getSpeaker(name) : Speaker*
+    + getSpeaker(name) : const Speaker*
+    + getAllSpeakers() : const map<string, Speaker>&
+    + getSpeakerCount() : size_t
+    + activateAllSpeakers() : void
+    + toString() : string
+    + operator[](name) : Speaker&
+    + operator[](name) : const Speaker&
+    + operator<<(os, smartHome) : ostream&
 }
 
-class RoomDescriptor {
-    -roomName: string
-    -roomNumber: int
-    -roomType: RoomType
+class Speaker {
+    - devices : map<string, shared_ptr<Device>>
+    - room : Room
     --
-    +RoomDescriptor(name: string, number: int, type: RoomType)
-    +~RoomDescriptor()
-    +RoomDescriptor(other: const RoomDescriptor&)
-    +operator=(other: const RoomDescriptor&): RoomDescriptor&
-    --
-    +getName(): string
-    +getNumber(): int
-    +getType(): RoomType
-    +setName(name: string): void
-    +setNumber(number: int): void
-    +setType(type: RoomType): void
+    + Speaker(roomType)
+    + addDevice(device) : bool
+    + removeDevice(id) : bool
+    + getDevice(id) : shared_ptr<Device>
+    + getDevice(id) : const shared_ptr<Device>
+    + getAllDevices() : const map<string, shared_ptr<Device>>&
+    + activateAllDevices() : void
+    + deactivateAllDevices() : void
+    + getRoomType() : RoomType
+    + getDeviceCount() : size_t
+    + toString() : string
 }
 
-enum RoomType {
-    LIVING_ROOM
-    BEDROOM
-    CORRIDOR
-    RESTROOM
-    KITCHEN
-    BALCONY
+class "Speaker::Room" as Room {
+    - roomType : RoomType
+    - area : double
+    - description : string
+    --
+    + Room(type, area, desc)
+    + getRoomType() : RoomType
+    + getArea() : double
+    + getDescription() : const string&
+    + setDescription(desc) : void
+    --
+    + enum RoomType { LIVING_ROOM, BEDROOM, CHILDREN_ROOM, RESTROOM, KITCHEN, BALCONY }
 }
 
-abstract class SmartDevice {
-    #deviceId: int
-    #deviceName: string
-    #status: DeviceStatus
+abstract class Device {
+    # id : const string
+    # name : const string
+    # status : Status
     --
-    +SmartDevice(id: int, name: string)
-    +{abstract} ~SmartDevice()
-    +SmartDevice(other: const SmartDevice&)
-    +operator=(other: const SmartDevice&): SmartDevice&
+    + Device(id, name)
+    + getId() : const string&
+    + getName() : const string&
+    + getStatus() : Status
+    + setStatus(status) : void
+    + toString() : string
+    + {abstract} clone() : unique_ptr<Device>
     --
-    +getId(): int
-    +getName(): string
-    +getStatus(): DeviceStatus
-    +setStatus(status: DeviceStatus): void
-    +{abstract} turnOn(): void
-    +{abstract} turnOff(): void
-    +{abstract} getInfo(): string
+    + enum Status { ONLINE, OFFLINE }
 }
 
-enum DeviceStatus {
-    ONLINE
-    OFFLINE
+interface IActivatable {
+    + {abstract} turnOn() : bool
+    + {abstract} turnOff() : bool
+    + {abstract} isOn() : bool
+    --
+    + enum PowerState { ON, OFF }
 }
 
-interface IActiveDevice {
-    +{abstract} ~IActiveDevice()
-    +{abstract} activate(): void
-    +{abstract} deactivate(): void
-    +{abstract} getActivationStatus(): bool
-    +{abstract} getMainFunction(): string
+interface IMeasurable {
+    + {abstract} readValue() : double
+    + {abstract} getUnit() : const string&
+    + {abstract} isCalibrated() : bool
+    + {abstract} calibrate() : bool
 }
 
-interface ISensorDevice {
-    +{abstract} ~ISensorDevice()
-    +{abstract} getValue(): double
-    +{abstract} getUnit(): string
-    +{abstract} updateValue(value: double): void
+class VacuumCleaner {
+    - powerState : PowerState
+    - batteryLevel : int
+    --
+    + VacuumCleaner(id, name)
+    + turnOn() : bool
+    + turnOff() : bool
+    + isOn() : bool
+    + getBatteryLevel() : int
+    + clone() : unique_ptr<Device>
 }
 
-class ActiveDevice {
-    -isActivated: bool
-    -mainFunction: string
+class SmartLight {
+    - powerState : PowerState
+    - brightness : int
     --
-    +ActiveDevice(id: int, name: string, function: string)
-    +~ActiveDevice()
-    +ActiveDevice(other: const ActiveDevice&)
-    +operator=(other: const ActiveDevice&): ActiveDevice&
-    --
-    +activate(): void
-    +deactivate(): void
-    +getActivationStatus(): bool
-    +getMainFunction(): string
-    +turnOn(): void
-    +turnOff(): void
-    +getInfo(): string
+    + SmartLight(id, name)
+    + turnOn() : bool
+    + turnOff() : bool
+    + isOn() : bool
+    + setBrightness(level) : bool
+    + getBrightness() : int
+    + clone() : unique_ptr<Device>
 }
 
-class SensorDevice {
-    -sensorValue: double
-    -measurementUnit: string
+class Thermometer {
+    - temperature : double
+    - calibrated : bool
     --
-    +SensorDevice(id: int, name: string, unit: string)
-    +~SensorDevice()
-    +SensorDevice(other: const SensorDevice&)
-    +operator=(other: const SensorDevice&): SensorDevice&
-    --
-    +getValue(): double
-    +getUnit(): string
-    +updateValue(value: double): void
-    +turnOn(): void
-    +turnOff(): void
-    +getInfo(): string
+    + Thermometer(id, name)
+    + readValue() : double
+    + getUnit() : const string&
+    + isCalibrated() : bool
+    + calibrate() : bool
+    + clone() : unique_ptr<Device>
 }
 
-class HybridDevice {
-    -isActivated: bool
-    -mainFunction: string
-    -sensorValue: double
-    -measurementUnit: string
+class SmartKettle {
+    - powerState : PowerState
+    - temperature : double
+    - calibrated : bool
+    - targetTemp : double
     --
-    +HybridDevice(id: int, name: string, function: string, unit: string)
-    +~HybridDevice()
-    +HybridDevice(other: const HybridDevice&)
-    +operator=(other: const HybridDevice&): HybridDevice&
-    --
-    +activate(): void
-    +deactivate(): void
-    +getActivationStatus(): bool
-    +getMainFunction(): string
-    +getValue(): double
-    +getUnit(): string
-    +updateValue(value: double): void
-    +turnOn(): void
-    +turnOff(): void
-    +getInfo(): string
+    + SmartKettle(id, name)
+    + turnOn() : bool
+    + turnOff() : bool
+    + isOn() : bool
+    + readValue() : double
+    + getUnit() : const string&
+    + isCalibrated() : bool
+    + calibrate() : bool
+    + setTargetTemperature(temp) : bool
+    + clone() : unique_ptr<Device>
 }
 
-'Вёрстка
-RoomDescriptor -[hidden]right- SmartSpeaker
-SmartDevice -[hidden]down- SmartSpeaker
-ActiveDevice -[hidden]down- IActiveDevice
-SensorDevice -[hidden]down- ISensorDevice
-ActiveDevice -[hidden]down- SmartDevice
-SensorDevice -[hidden]down- SmartDevice
-SensorDevice -[hidden]down- HybridDevice
-ActiveDevice -[hidden]down- HybridDevice
-DeviceStatus -[hidden]right- SmartDevice
+' Горизонтальное размещение интерфейсов
+IActivatable -[hidden]right- IMeasurable
 
-' Отношения
-RoomDescriptor --> RoomType : uses
-SmartDevice --> DeviceStatus : uses
+' Горизонтальное размещение устройств
+VacuumCleaner -[hidden]right- SmartLight
+Thermometer -[hidden]right- SmartKettle
 
-' Наследование классов от SmartDevice
-SmartDevice <|-- ActiveDevice : inherits
-SmartDevice <|-- SensorDevice : inherits
-SmartDevice <|-- HybridDevice : inherits
+' Вертикальная последовательность
+SmartHome -[hidden]down-> Speaker
+Speaker -[hidden]down-> Room
+Room -[hidden]down-> Device
+Device -[hidden]down-> IActivatable
+IActivatable -[hidden]down-> VacuumCleaner
+
+' Композиция
+SmartHome *-- Speaker : "содержит"
+Speaker *-- Room : "nested class"
+
+' Управление устройствами
+Speaker o-- Device : "управляет"
+
+' Наследование
+Device <|-- VacuumCleaner
+Device <|-- SmartLight
+Device <|-- Thermometer
+Device <|-- SmartKettle
 
 ' Реализация интерфейсов
-IActiveDevice <|.. ActiveDevice : implements
-ISensorDevice <|.. SensorDevice : implements
-IActiveDevice <|.. HybridDevice : implements
-ISensorDevice <|.. HybridDevice : implements
-
-' Композиция и агрегация
-SmartSpeaker *-- RoomDescriptor : contains
-SmartSpeaker o-- SmartDevice : aggregates
-SmartHome o-- SmartSpeaker : aggregates
-
-' Примечания
-note right of SmartHome : Использует std::map для\nавтоматической сортировки\nколонок по имени комнаты
-note right of HybridDevice : Реализует оба интерфейса:\nIActiveDevice и ISensorDevice\nИзбегает diamond problem
-note bottom of IActiveDevice : Интерфейс для\nактивных устройств
-note bottom of ISensorDevice : Интерфейс для\nустройств-датчиков
+IActivatable <|.. VacuumCleaner
+IActivatable <|.. SmartLight
+IMeasurable <|.. Thermometer
+IActivatable <|.. SmartKettle
+IMeasurable <|.. SmartKettle
 
 @enduml 

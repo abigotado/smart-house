@@ -1,204 +1,99 @@
-# 🏠 Smart House - Библиотека управления умным домом
+# Smart House Management System
 
-Библиотека для управления умным домом на C++. Система включает управление умными колонками, устройствами различных типов и комнатами.
+Система управления умным домом на C++20 с использованием современных принципов ООП.
 
-## 🏗️ Архитектура системы
+## Требования
 
-```mermaid
-classDiagram
-    class RoomType {
-        <<enumeration>>
-        LIVING_ROOM
-        BEDROOM
-        CORRIDOR
-        RESTROOM
-        KITCHEN
-        BALCONY
-    }
-    
-    class DeviceStatus {
-        <<enumeration>>
-        ONLINE
-        OFFLINE
-    }
-    
-    class RoomDescriptor {
-        -string roomName
-        -int roomNumber
-        -RoomType roomType
-        +RoomDescriptor(string name, int number, RoomType type)
-        +string getName() const
-        +int getNumber() const
-        +RoomType getType() const
-    }
-    
-    class SmartDevice {
-        <<abstract>>
-        #int deviceId
-        #string deviceName
-        #DeviceStatus status
-        +SmartDevice(int id, string name)
-        +virtual ~SmartDevice()
-        +int getId() const
-        +string getName() const
-        +DeviceStatus getStatus() const
-        +virtual void turnOn() = 0
-        +virtual void turnOff() = 0
-        +virtual string getInfo() const = 0
-    }
-    
-    class IActiveDevice {
-        <<interface>>
-        +virtual ~IActiveDevice() = 0
-        +virtual void activate() = 0
-        +virtual void deactivate() = 0
-        +virtual bool getActivationStatus() const = 0
-        +virtual string getMainFunction() const = 0
-    }
-    
-    class ISensorDevice {
-        <<interface>>
-        +virtual ~ISensorDevice() = 0
-        +virtual double getValue() const = 0
-        +virtual string getUnit() const = 0
-        +virtual void updateValue(double value) = 0
-    }
-    
-    class ActiveDevice {
-        -bool isActivated
-        -string mainFunction
-        +ActiveDevice(int id, string name, string function)
-        +void activate()
-        +void deactivate()
-        +bool getActivationStatus() const
-        +string getMainFunction() const
-        +void turnOn() override
-        +void turnOff() override
-        +string getInfo() const override
-    }
-    
-    class SensorDevice {
-        -double sensorValue
-        -string measurementUnit
-        +SensorDevice(int id, string name, string unit)
-        +double getValue() const
-        +string getUnit() const
-        +void updateValue(double value)
-        +void turnOn() override
-        +void turnOff() override
-        +string getInfo() const override
-    }
-    
-    class HybridDevice {
-        -bool isActivated
-        -string mainFunction
-        -double sensorValue
-        -string measurementUnit
-        +HybridDevice(int id, string name, string function, string unit)
-        +void activate()
-        +void deactivate()
-        +bool getActivationStatus() const
-        +string getMainFunction() const
-        +double getValue() const
-        +string getUnit() const
-        +void updateValue(double value)
-        +void turnOn() override
-        +void turnOff() override
-        +string getInfo() const override
-    }
-    
-    class SmartSpeaker {
-        -RoomDescriptor roomDesc
-        -vector~shared_ptr~SmartDevice~~ devices
-        +SmartSpeaker(string roomName, int roomNumber, RoomType roomType)
-        +void addDevice(shared_ptr~SmartDevice~ device)
-        +void removeDevice(int deviceId)
-        +void checkAndUpdateDevices()
-        +string getRoomName() const
-        +int getDeviceCount() const
-    }
-    
-    class SmartHome {
-        -map~string, shared_ptr~SmartSpeaker~~ speakers
-        +SmartHome()
-        +void addSpeaker(shared_ptr~SmartSpeaker~ speaker)
-        +void removeSpeaker(string roomName)
-        +shared_ptr~SmartSpeaker~ operator[](const string& roomName)
-        +void manageAllDevices()
-        +int getTotalDeviceCount() const
-    }
-    
-    RoomDescriptor --> RoomType : uses
-    SmartDevice --> DeviceStatus : uses
-    SmartDevice <|-- ActiveDevice : inherits
-    SmartDevice <|-- SensorDevice : inherits
-    SmartDevice <|-- HybridDevice : inherits
-    IActiveDevice <|.. ActiveDevice : implements
-    ISensorDevice <|.. SensorDevice : implements
-    IActiveDevice <|.. HybridDevice : implements
-    ISensorDevice <|.. HybridDevice : implements
-    SmartSpeaker *-- RoomDescriptor : contains
-    SmartSpeaker o-- SmartDevice : aggregates
-    SmartHome o-- SmartSpeaker : aggregates
+- C++20 или выше
+- CMake 3.20+
+- Компилятор: GCC 10+, Clang 10+, MSVC 2019+
+
+## Структура проекта
+
 ```
-
-## 📱 Основные компоненты
-
-### Типы устройств
-
-- **Активные устройства** - имеют основную функцию (пылесос, лампочка)
-- **Устройства-датчики** - снимают показания (термометр, датчик протечки)
-- **Гибридные устройства** - совмещают функции (чайник, увлажнитель)
-
-### Управление
-
-- **SmartHome** - главный класс системы с коллекцией колонок
-- **SmartSpeaker** - умная колонка для управления устройствами в комнате
-- **RoomDescriptor** - описание комнаты (имя, номер, тип)
-
-### Особенности
-
-- Автоматическая сортировка колонок по имени комнаты (std::map)
-- Перегрузка операторов `<<` и `[]` для удобного доступа
-- Автоматическое включение выключенных устройств
-- Интерфейсный подход для гибридных устройств (избегает diamond problem)
-
-## 📂 Структура проекта
-
-```log
 smart-house/
-├── docs/                          # Документация и диаграммы
-├── include/smart_house/           # Заголовочные файлы
-├── src/                          # Исходный код
+├── app/                          # Основное приложение
+│   ├── device/                   # Абстрактный базовый класс Device
+│   ├── interfaces/               # Интерфейсы IActivatable, IMeasurable
+│   ├── devices/                  # Конкретные устройства
+│   │   ├── vacuum_cleaner/       # Пылесос
+│   │   ├── smart_light/          # Умная лампа
+│   │   ├── thermometer/          # Термометр
+│   │   └── smart_kettle/         # Умный чайник
+│   ├── speaker/                  # Класс Speaker с вложенным Room
+│   └── home/                     # Класс SmartHome
+├── tests/                        # Модульные тесты
+├── docs/                         # Документация и UML
 ├── examples/                     # Примеры использования
 └── CMakeLists.txt               # Конфигурация сборки
 ```
 
-## 💡 Пример использования
+## Сборка
+
+```bash
+mkdir build && cd build
+cmake ..
+make
+```
+
+## Запуск
+
+```bash
+# Основная программа
+./app/smart_house_demo
+
+# Тесты
+./tests/smart_house_tests
+```
+
+## Тестирование памяти
+
+```bash
+# Проверка утечек памяти (Linux/macOS)
+valgrind --leak-check=full ./app/smart_house_demo
+valgrind --leak-check=full ./tests/smart_house_tests
+```
+
+## Основные компоненты
+
+- **Device** - абстрактный базовый класс для всех устройств
+- **IActivatable** - интерфейс для активных устройств (включение/выключение)
+- **IMeasurable** - интерфейс для измерительных устройств (чтение данных)
+- **VacuumCleaner** - пылесос (активное устройство)
+- **SmartLight** - умная лампа (активное устройство)
+- **Thermometer** - термометр (измерительное устройство)
+- **SmartKettle** - умный чайник (активное + измерительное устройство)
+- **Speaker** - управление устройствами в комнате (с вложенным классом Room)
+- **SmartHome** - главный класс системы
+
+## Пример использования
 
 ```cpp
-#include "smart_house/SmartHome.h"
-#include "smart_house/SmartSpeaker.h"
-#include "smart_house/devices/ActiveDevice.h"
+#include "app/home/include/smart_home.h"
+#include "app/devices/smart_kettle/include/smart_kettle.h"
 
 int main() {
-    // Создаем умный дом
+    using namespace smart_house;
+    
     SmartHome home;
     
-    // Добавляем колонку в спальню
-    auto speaker = std::make_shared<SmartSpeaker>("Спальня", 1, RoomType::BEDROOM);
-    home.addSpeaker(speaker);
+    // Добавление комнаты
+    home.addSpeaker("kitchen", Speaker::Room::RoomType::KITCHEN);
     
-    // Добавляем устройства
-    auto lamp = std::make_shared<ActiveDevice>(1, "Умная лампа", "освещение");
-    speaker->addDevice(lamp);
+    // Добавление устройства
+    auto kettle = std::make_shared<SmartKettle>("kettle_01", "Smart Kettle");
+    home["kitchen"].addDevice(kettle);
     
-    // Управляем устройствами
-    home.manageAllDevices();
+    // Активация всех устройств
+    home.activateAllSpeakers();
     
-    // Вывод информации о доме
+    // Вывод информации
     std::cout << home << std::endl;
     
     return 0;
 }
 ```
+
+## Диаграмма классов
+
+См. `docs/SmartHouse_ClassDiagram.png` или `docs/smart_house_uml.puml`
