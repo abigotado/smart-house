@@ -75,6 +75,24 @@ abstract class Device {
     + enum DeviceStatus { ONLINE, OFFLINE }
 }
 
+enum TemperatureUnit {
+    CELSIUS
+    FAHRENHEIT
+    KELVIN
+}
+
+class TemperatureManager {
+    - temperature_unit_ : TemperatureUnit
+    --
+    + TemperatureManager(unit = CELSIUS)
+    + set_unit(unit) : void
+    + get_unit() : TemperatureUnit
+    + get_unit_string() : string
+    + convert_to_unit(value, from) : double
+    + {static} unit_to_string(unit) : string
+    + {static} convert(value, from, to) : double
+}
+
 interface IActivatable {
     + ~IActivatable()
     + {abstract} turn_on() : void
@@ -88,7 +106,7 @@ interface IMeasurable {
     + ~IMeasurable()
     + {abstract} read_value() : double
     + {abstract} get_unit() : const string&
-    + {abstract} is_calibrated() : bool
+    + {abstract} get_is_calibrated() : bool
     + {abstract} calibrate() : void
 }
 
@@ -112,21 +130,24 @@ class SmartLight {
     + turn_on() : void
     + turn_off() : void
     + get_power_state() : PowerState
-    + set_brightness(level) : bool
+    + set_brightness(level) : void
     + get_brightness() : int
     + clone() : shared_ptr<Device>
 }
 
 class Thermometer {
     - temperature : double
-    - calibrated : bool
+    - is_calibrated : bool
+    - temp_manager : TemperatureManager
     --
-    + Thermometer(id, name)
+    + Thermometer(id, name, unit = CELSIUS)
     + read_value() : double
     + get_unit() : const string&
-    + is_calibrated() : bool
+    + get_is_calibrated() : bool
     + calibrate() : void
     + clone() : shared_ptr<Device>
+    + to_string() : string
+    + set_temperature_unit(unit) : void
 }
 
 class SmartKettle {
@@ -134,21 +155,24 @@ class SmartKettle {
     - temperature : double
     - calibrated : bool
     - target_temp : double
+    - temp_manager : TemperatureManager
     --
-    + SmartKettle(id, name)
+    + SmartKettle(id, name, unit = CELSIUS)
     + turn_on() : void
     + turn_off() : void
     + get_power_state() : PowerState
     + read_value() : double
     + get_unit() : const string&
-    + is_calibrated() : bool
+    + get_is_calibrated() : bool
     + calibrate() : void
-    + set_target_temperature(temp) : bool
+    + set_target_temperature(temp) : void
+    + set_temperature_unit(unit) : void
     + clone() : shared_ptr<Device>
 }
 
-' Горизонтальное размещение интерфейсов
+' Горизонтальное размещение интерфейсов и менеджера температуры
 IActivatable -[hidden]right- IMeasurable
+IMeasurable -[hidden]right- TemperatureManager
 
 ' Горизонтальное размещение устройств
 VacuumCleaner -[hidden]right- SmartLight
@@ -160,10 +184,11 @@ Speaker -[hidden]down-> Room
 Room -[hidden]down-> Device
 Device -[hidden]down-> IActivatable
 IActivatable -[hidden]down-> VacuumCleaner
+TemperatureManager -[hidden]down-> Thermometer
 
 ' Композиция
 SmartHome *-- Speaker : "содержит"
-Speaker *-- Room : "nested class"
+Speaker *-- Room : "внутренний класс"
 
 ' Управление устройствами
 Speaker o-- Device : "управляет"
@@ -180,5 +205,12 @@ IActivatable <|.. SmartLight
 IMeasurable <|.. Thermometer
 IActivatable <|.. SmartKettle
 IMeasurable <|.. SmartKettle
+
+' Композиция с TemperatureManager
+TemperatureManager <--* Thermometer : "содержит"
+TemperatureManager <--* SmartKettle : "содержит"
+
+' Использование enum TemperatureUnit
+TemperatureUnit <-- TemperatureManager : "использует"
 
 @enduml 

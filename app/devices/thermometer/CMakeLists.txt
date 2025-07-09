@@ -8,6 +8,6 @@ add_library(thermometer STATIC source/thermometer.cpp)
 
 target_include_directories(thermometer PUBLIC include)
 
-target_link_libraries(thermometer PUBLIC device interfaces)
+target_link_libraries(thermometer PUBLIC device interfaces temperature_manager)
 
 target_compile_features(thermometer PUBLIC cxx_std_20) 
