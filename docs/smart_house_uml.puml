@@ -2,12 +2,15 @@
 
 !theme plain
 skinparam classAttributeIconSize 0
-skinparam classFontSize 9
-skinparam packageFontSize 11
+skinparam classFontSize 14
+skinparam packageFontSize 12
 skinparam dpi 150
 skinparam linetype ortho
-skinparam nodesep 10
-skinparam ranksep 30
+skinparam nodesep 30
+skinparam ranksep 45
+skinparam minClassWidth 140
+skinparam maxClassWidth 350
+skinparam wrapWidth 320
 
 title "Система Умного Дома - Диаграмма Классов"
 
@@ -69,10 +72,17 @@ abstract class Device {
     + get_name() : const string&
     + get_status() : DeviceStatus
     + set_status(status) : void
-    + to_string() : string
     + {abstract} clone() : shared_ptr<Device>
     --
     + enum DeviceStatus { ONLINE, OFFLINE }
+}
+
+abstract class Object {
+    --
+    + ~Object()
+    + {abstract} to_string() : string
+    --
+    # Object()
 }
 
 enum TemperatureUnit {
@@ -110,6 +120,8 @@ interface IMeasurable {
     + {abstract} calibrate() : void
 }
 
+
+
 class VacuumCleaner {
     - power_state : PowerState
     - battery_level : int
@@ -120,6 +132,7 @@ class VacuumCleaner {
     + get_power_state() : PowerState
     + get_battery_level() : int
     + clone() : shared_ptr<Device>
+    + to_string() : string
 }
 
 class SmartLight {
@@ -133,6 +146,7 @@ class SmartLight {
     + set_brightness(level) : void
     + get_brightness() : int
     + clone() : shared_ptr<Device>
+    + to_string() : string
 }
 
 class Thermometer {
@@ -147,7 +161,6 @@ class Thermometer {
     + calibrate() : void
     + clone() : shared_ptr<Device>
     + to_string() : string
-    + set_temperature_unit(unit) : void
 }
 
 class SmartKettle {
@@ -168,32 +181,36 @@ class SmartKettle {
     + set_target_temperature(temp) : void
     + set_temperature_unit(unit) : void
     + clone() : shared_ptr<Device>
+    + to_string() : string
 }
 
-' Горизонтальное размещение интерфейсов и менеджера температуры
+' Оптимизированное размещение для заполнения A4
+SmartHome -[hidden]right- Object
+Object -[hidden]right- TemperatureManager
+SmartHome -[hidden]down-> Speaker
+Speaker -[hidden]right- Room
+Object -[hidden]down-> Device
+Device -[hidden]right- TemperatureManager
+TemperatureManager -[hidden]down- TemperatureUnit
+Device -[hidden]down-> IActivatable
 IActivatable -[hidden]right- IMeasurable
-IMeasurable -[hidden]right- TemperatureManager
-
-' Горизонтальное размещение устройств
 VacuumCleaner -[hidden]right- SmartLight
 Thermometer -[hidden]right- SmartKettle
-
-' Вертикальная последовательность
-SmartHome -[hidden]down-> Speaker
-Speaker -[hidden]down-> Room
-Room -[hidden]down-> Device
-Device -[hidden]down-> IActivatable
 IActivatable -[hidden]down-> VacuumCleaner
-TemperatureManager -[hidden]down-> Thermometer
+IMeasurable -[hidden]down-> Thermometer
 
 ' Композиция
 SmartHome *-- Speaker : "содержит"
-Speaker *-- Room : "внутренний класс"
+Speaker *-- Room
 
 ' Управление устройствами
-Speaker o-- Device : "управляет"
+Speaker --> Device : "управляет"
 
 ' Наследование
+Object <|-- Device
+Object <|-- SmartHome
+Object <|-- Speaker
+Object <|-- Room
 Device <|-- VacuumCleaner
 Device <|-- SmartLight
 Device <|-- Thermometer
@@ -211,6 +228,6 @@ TemperatureManager <--* Thermometer : "содержит"
 TemperatureManager <--* SmartKettle : "содержит"
 
 ' Использование enum TemperatureUnit
-TemperatureUnit <-- TemperatureManager : "использует"
+TemperatureManager --> TemperatureUnit : "использует"
 
 @enduml 

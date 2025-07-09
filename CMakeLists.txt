@@ -11,4 +11,4 @@ add_subdirectory(app)
 # add_subdirectory(examples)
 
 # Тесты (опционально)
-add_subdirectory(tests) 
+    add_subdirectory(tests)

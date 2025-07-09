@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../device/include/device.h"
-#include "../../interfaces/include/measurable.h"
+#include "../../../shared/include/measurable.h"
 #include "../../../temperature_manager/include/temperature_manager.h"
 
 namespace smart_house {
@@ -25,3 +25,4 @@ namespace smart_house {
             TemperatureManager temp_manager;
     };
 }
+ 

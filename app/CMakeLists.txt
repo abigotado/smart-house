@@ -7,7 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Утилиты
 add_subdirectory(temperature_manager)
 
-# Устройства (включая базовый класс и интерфейсы)
+# Общие интерфейсы и базовые классы
+add_subdirectory(shared)
+
+# Устройства (включая базовый класс)
 add_subdirectory(devices)
 
 # Управление

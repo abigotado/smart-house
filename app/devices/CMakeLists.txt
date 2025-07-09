@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Базовые компоненты
 add_subdirectory(device)
-add_subdirectory(interfaces)
+# Интерфейсы теперь в app/shared
 
 # Конкретные устройства
 add_subdirectory(vacuum_cleaner)

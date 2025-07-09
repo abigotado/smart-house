@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../device/include/device.h"
-#include "../../interfaces/include/activatable.h"
+#include "../../../shared/include/activatable.h"
 
 namespace smart_house {
     class VacuumCleaner : public Device, public IActivatable {

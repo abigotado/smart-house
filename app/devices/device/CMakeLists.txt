@@ -11,4 +11,6 @@ add_library(device STATIC source/device.cpp)
 
 target_include_directories(device PUBLIC include)
 
+target_link_libraries(device PUBLIC shared)
+
 target_compile_features(device PUBLIC cxx_std_20) 

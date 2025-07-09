@@ -10,7 +10,7 @@ target_include_directories(speaker PUBLIC include)
 
 target_link_libraries(speaker PUBLIC 
     device 
-    interfaces
+    shared
     vacuum_cleaner
     smart_light
     thermometer
