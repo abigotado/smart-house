@@ -12,8 +12,8 @@ namespace smart_house {
  */
 class SmartKettle : public Device, public IActivatable, public IMeasurable {
     public:
-        SmartKettle(const std::string& id, const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS)
-            : Device(id, name), temp_manager_(unit) {};
+        SmartKettle(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS)
+            : Device(name), temp_manager_(unit) {};
         
         // Интерфейс IActivatable
         void turn_on() noexcept override;

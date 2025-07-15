@@ -2,9 +2,17 @@
 
 #include <string>
 #include <memory>
+#include <random>
+#include <sstream>
+#include <iomanip>
 #include "../../../shared/include/object.h"
 
 namespace smart_house {
+
+/**
+ * @brief Генерирует UUID для устройств
+ */
+std::string generate_device_uuid();
 
 /**
  * @brief Базовый класс для всех устройств умного дома
@@ -13,7 +21,7 @@ class Device : public Object {
         public:
             enum class DeviceStatus { ONLINE, OFFLINE };
 
-            Device(const std::string& id, const std::string& name);
+            Device(const std::string& name);
             virtual ~Device() = default;
 
             [[nodiscard]] const std::string& get_id() const noexcept;

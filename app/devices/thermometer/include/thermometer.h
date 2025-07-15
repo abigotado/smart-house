@@ -11,8 +11,8 @@ namespace smart_house {
  */
 class Thermometer : public Device, public IMeasurable {
     public:
-        Thermometer(const std::string& id, const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS) 
-            : Device(id, name), temp_manager_(unit) {};
+        Thermometer(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS) 
+            : Device(name), temp_manager_(unit) {};
         
         // Интерфейс IMeasurable
         double read_value() const noexcept override;

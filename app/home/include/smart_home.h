@@ -26,8 +26,7 @@ public:
     [[nodiscard]] std::size_t get_id() const noexcept;
 
     /// Добавляет колонку
-    bool add_speaker(const std::string& name, const std::string& room_name, 
-                     int room_number, Speaker::Room::RoomType room_type);
+    bool add_speaker(const std::string& name, const Speaker::Room& room);
 
     /// Удаляет колонку по имени
     bool remove_speaker(const std::string& name);

@@ -16,53 +16,35 @@ namespace smart_house {
 class Speaker : public Object {
 public:
     /**
-     * @brief Комната, где расположена колонка
+     * @brief Типы комнат
      */
-    class Room : public Object {
-    public:
-        enum class RoomType {
-            LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY
-        };
-
-        /// Создает комнату с указанными параметрами
-        Room(const std::string& name, int room_number, RoomType type);
-        
-        // Запрещаем копирование, разрешаем перемещение
-        Room(const Room&) = delete;
-        Room& operator=(const Room&) = delete;
-        Room(Room&&) = default;
-        Room& operator=(Room&&) = default;
-
-        /// Получает уникальный ID комнаты
-        [[nodiscard]] std::size_t get_id() const noexcept;
-
-        [[nodiscard]] const std::string& get_name() const noexcept;
-        [[nodiscard]] int get_room_number() const noexcept;
-        [[nodiscard]] RoomType get_room_type() const noexcept;
-
-        [[nodiscard]] std::string to_string() const override;
-
-        /// Преобразует тип комнаты в строку
-        static std::string room_type_to_string(RoomType type);
-
-    private:
-        static std::atomic<std::size_t> next_id_;
-        const std::size_t id_;
-        std::string name_;
-        int room_number_;
-        RoomType room_type_;
+    enum class RoomType {
+        LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY
     };
 
-    Speaker(const std::string& speaker_name, const std::string& room_name, int room_number, Room::RoomType room_type);
+    /**
+     * @brief Структура с данными комнаты
+     */
+    struct Room {
+        std::string name;
+        int room_number;
+        RoomType room_type;
+
+        Room(const std::string& name, int room_number, RoomType type)
+            : name(name), room_number(room_number), room_type(type) {}
+    };
+
+    /// Преобразует тип комнаты в строку
+    static std::string room_type_to_string(RoomType type);
+
+    /// Конструктор с готовой структурой Room
+    Speaker(const std::string& speaker_name, const Room& room);
 
     // Запрещаем копирование, разрешаем перемещение
     Speaker(const Speaker&) = delete;
     Speaker& operator=(const Speaker&) = delete;
     Speaker(Speaker&&) = default;
     Speaker& operator=(Speaker&&) = default;
-
-    /// Получает уникальный ID колонки
-    [[nodiscard]] std::size_t get_id() const noexcept;
 
     /// Получает имя колонки (для сортировки)
     [[nodiscard]] const std::string& get_name() const noexcept;
@@ -80,14 +62,18 @@ public:
     /// Обходит устройства и включает выключенные
     void check_and_activate_devices();
 
-    [[nodiscard]] Room::RoomType get_room_type() const noexcept;
+    [[nodiscard]] RoomType get_room_type() const noexcept;
     [[nodiscard]] std::size_t get_device_count() const noexcept;
     [[nodiscard]] const Room& get_room() const noexcept;
+    
+    /// Перемещает колонку в другую комнату
+    bool move_to_room(const std::string& room_name, int room_number, RoomType room_type);
+    
+    /// Переименовывает колонку
+    bool rename(const std::string& new_name);
     [[nodiscard]] std::string to_string() const override;
 
 private:
-    static std::atomic<std::size_t> next_id_;
-    const std::size_t id_;
     std::string name_;
     std::map<std::string, std::shared_ptr<Device>> devices_;
     Room room_;
