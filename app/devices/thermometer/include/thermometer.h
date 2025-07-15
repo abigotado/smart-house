@@ -25,6 +25,9 @@ class Thermometer : public Device, public IMeasurable {
         /// Изменяет единицу измерения температуры
         void set_temperature_unit(TemperatureUnit unit) noexcept;
 
+        /// Создает копию устройства
+        std::shared_ptr<Device> clone() const override;
+
     private:
         double temperature_ = 0.0;
         bool is_calibrated_ = false;

@@ -34,6 +34,9 @@ class SmartKettle : public Device, public IActivatable, public IMeasurable {
         /// Изменяет единицу измерения температуры
         void set_temperature_unit(TemperatureUnit unit) noexcept;
 
+        /// Создает копию устройства
+        std::shared_ptr<Device> clone() const override;
+
     private:
         IActivatable::PowerState power_state_ = IActivatable::PowerState::OFF;
         double temperature_ = 20.0;

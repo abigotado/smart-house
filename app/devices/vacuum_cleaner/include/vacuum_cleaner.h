@@ -21,6 +21,9 @@ class VacuumCleaner : public Device, public IActivatable {
         
         [[nodiscard]] int get_battery_level() const noexcept;
 
+        /// Создает копию устройства
+        std::shared_ptr<Device> clone() const override;
+
     private:
         IActivatable::PowerState power_state_ = IActivatable::PowerState::OFF;
         int battery_level_ = 100;

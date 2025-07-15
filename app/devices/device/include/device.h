@@ -24,6 +24,16 @@ class Device : public Object {
             Device(const std::string& name);
             virtual ~Device() = default;
 
+            // Разрешаем копирование (для clone())
+            Device(const Device& other);
+            
+            // Запрещаем присваивание копированием
+            Device& operator=(const Device&) = delete;
+            
+            // Разрешаем перемещение
+            Device(Device&&) = default;
+            Device& operator=(Device&&) = default;
+
             [[nodiscard]] const std::string& get_id() const noexcept;
             [[nodiscard]] const std::string& get_name() const noexcept;
             [[nodiscard]] const DeviceStatus get_status() const noexcept;

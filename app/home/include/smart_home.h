@@ -28,6 +28,9 @@ public:
     /// Добавляет колонку
     bool add_speaker(const std::string& name, const Speaker::Room& room);
 
+    /// Перемещает колонку в другую комнату
+    bool move_speaker(const std::string& name, const Speaker::Room& new_room);
+
     /// Удаляет колонку по имени
     bool remove_speaker(const std::string& name);
 

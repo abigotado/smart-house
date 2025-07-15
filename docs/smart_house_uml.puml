@@ -22,7 +22,7 @@ class SmartHome {
     + SmartHome()
     + get_id() : size_t
     + add_speaker(name, room) : bool
-    + move_speaker(name, new_room_name, new_room_number, new_room_type) : bool
+    + move_speaker(name, new_room) : bool
     + remove_speaker(name) : bool
     + size() : size_t
     + to_string() : string
@@ -54,7 +54,7 @@ class Speaker {
     + get_room_type() : RoomType
     + get_room() : const Room&
     + get_device_count() : size_t
-    + move_to_room(room_name, room_number, room_type) : bool
+    + move_to_room(new_room) : void
     + rename(new_name) : bool
     + to_string() : string
     --
@@ -80,6 +80,7 @@ class Device {
     # status_ : DeviceStatus
     --
     + Device(name)
+    + Device(other)
     + ~Device()
     + get_id() : const string&
     + get_name() : const string&
@@ -88,6 +89,9 @@ class Device {
     + clone() : shared_ptr<Device>
     --
     + enum DeviceStatus { ONLINE, OFFLINE }
+    - operator=(const Device&) = delete
+    + Device(Device&&) = default
+    + operator=(Device&&) = default
 }
 
 abstract class Object {
@@ -138,6 +142,7 @@ class VacuumCleaner {
     - battery_level_ : int
     --
     + VacuumCleaner(name)
+    + clone() : shared_ptr<Device>
     + turn_on() : void
     + turn_off() : void
     + get_power_state() : PowerState
@@ -150,6 +155,7 @@ class SmartLight {
     - brightness_ : int
     --
     + SmartLight(name)
+    + clone() : shared_ptr<Device>
     + turn_on() : void
     + turn_off() : void
     + get_power_state() : PowerState
@@ -164,6 +170,7 @@ class Thermometer {
     - temp_manager_ : TemperatureManager
     --
     + Thermometer(name, unit = CELSIUS)
+    + clone() : shared_ptr<Device>
     + read_value() : double
     + get_unit() : const string&
     + get_is_calibrated() : bool
@@ -179,6 +186,7 @@ class SmartKettle {
     - temp_manager_ : TemperatureManager
     --
     + SmartKettle(name, unit = CELSIUS)
+    + clone() : shared_ptr<Device>
     + turn_on() : void
     + turn_off() : void
     + get_power_state() : PowerState

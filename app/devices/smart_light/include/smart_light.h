@@ -23,6 +23,9 @@ class SmartLight : public Device, public IActivatable {
         void set_brightness(int brightness);
         [[nodiscard]] int get_brightness() const noexcept;
 
+        /// Создает копию устройства
+        std::shared_ptr<Device> clone() const override;
+
     private:
         IActivatable::PowerState power_state_ = IActivatable::PowerState::OFF;
         int brightness_ = 100;

@@ -40,9 +40,11 @@ public:
     /// Конструктор с готовой структурой Room
     Speaker(const std::string& speaker_name, const Room& room);
 
-    // Запрещаем копирование, разрешаем перемещение
+    // Запрещаем копирование
     Speaker(const Speaker&) = delete;
     Speaker& operator=(const Speaker&) = delete;
+    
+    // Разрешаем перемещение
     Speaker(Speaker&&) = default;
     Speaker& operator=(Speaker&&) = default;
 
@@ -67,7 +69,7 @@ public:
     [[nodiscard]] const Room& get_room() const noexcept;
     
     /// Перемещает колонку в другую комнату
-    bool move_to_room(const std::string& room_name, int room_number, RoomType room_type);
+    void move_to_room(const Room& new_room);
     
     /// Переименовывает колонку
     bool rename(const std::string& new_name);
