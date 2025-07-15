@@ -12,7 +12,7 @@ namespace smart_house {
 class Thermometer : public Device, public IMeasurable {
     public:
         Thermometer(const std::string& id, const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS) 
-            : Device(id, name), temp_manager(unit) {};
+            : Device(id, name), temp_manager_(unit) {};
         
         // Интерфейс IMeasurable
         double read_value() const noexcept override;
@@ -20,7 +20,6 @@ class Thermometer : public Device, public IMeasurable {
         bool get_is_calibrated() const noexcept override;
         void calibrate() override;
         
-        std::shared_ptr<Device> clone() const override;
         std::string to_string() const override;
         
         /// Изменяет единицу измерения температуры
@@ -32,5 +31,5 @@ class Thermometer : public Device, public IMeasurable {
         TemperatureManager temp_manager_;
 };
 
-}
+} // namespace smart_house
  

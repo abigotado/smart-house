@@ -17,7 +17,6 @@ class VacuumCleaner : public Device, public IActivatable {
         void turn_off() noexcept override;
         [[nodiscard]] IActivatable::PowerState get_power_state() const noexcept override;
         
-        std::shared_ptr<Device> clone() const override;
         std::string to_string() const override;
         
         [[nodiscard]] int get_battery_level() const noexcept;
@@ -27,4 +26,4 @@ class VacuumCleaner : public Device, public IActivatable {
         int battery_level_ = 100;
 };
 
-} 
+} // namespace smart_house 

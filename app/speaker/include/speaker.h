@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <atomic>
 
 namespace smart_house {
 
@@ -25,6 +26,15 @@ public:
 
         /// Создает комнату с указанными параметрами
         Room(const std::string& name, int room_number, RoomType type);
+        
+        // Запрещаем копирование, разрешаем перемещение
+        Room(const Room&) = delete;
+        Room& operator=(const Room&) = delete;
+        Room(Room&&) = default;
+        Room& operator=(Room&&) = default;
+
+        /// Получает уникальный ID комнаты
+        [[nodiscard]] std::size_t get_id() const noexcept;
 
         [[nodiscard]] const std::string& get_name() const noexcept;
         [[nodiscard]] int get_room_number() const noexcept;
@@ -36,6 +46,8 @@ public:
         static std::string room_type_to_string(RoomType type);
 
     private:
+        static std::atomic<std::size_t> next_id_;
+        const std::size_t id_;
         std::string name_;
         int room_number_;
         RoomType room_type_;
@@ -46,6 +58,11 @@ public:
     // Запрещаем копирование, разрешаем перемещение
     Speaker(const Speaker&) = delete;
     Speaker& operator=(const Speaker&) = delete;
+    Speaker(Speaker&&) = default;
+    Speaker& operator=(Speaker&&) = default;
+
+    /// Получает уникальный ID колонки
+    [[nodiscard]] std::size_t get_id() const noexcept;
 
     /// Получает имя колонки (для сортировки)
     [[nodiscard]] const std::string& get_name() const noexcept;
@@ -69,6 +86,8 @@ public:
     [[nodiscard]] std::string to_string() const override;
 
 private:
+    static std::atomic<std::size_t> next_id_;
+    const std::size_t id_;
     std::string name_;
     std::map<std::string, std::shared_ptr<Device>> devices_;
     Room room_;

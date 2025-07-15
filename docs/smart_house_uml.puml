@@ -15,27 +15,37 @@ skinparam wrapWidth 320
 title "Система Умного Дома - Диаграмма Классов"
 
 class SmartHome {
+    - {static} next_id_ : atomic<size_t>
+    - id_ : const size_t
     - speakers_ : map<string, Speaker>
     --
-    + add_speaker(name, room_type) : bool
+    + SmartHome()
+    + get_id() : size_t
+    + add_speaker(name, room_name, room_number, room_type) : bool
     + remove_speaker(name) : bool
-    + get_speaker(name) : Speaker*
-    + get_speaker(name) : const Speaker*
-    + get_all_speakers() : const map<string, Speaker>&
-    + get_speaker_count() : size_t
-    + activate_all_speakers() : void
+    + size() : size_t
     + to_string() : string
-    + operator[](name) : Speaker&
-    + operator[](name) : const Speaker&
+    + operator[](name : string) : Speaker&
+    + operator[](name : string) : const Speaker&
+    + operator[](index : size_t) : Speaker&
+    + operator[](index : size_t) : const Speaker&
     + operator<<(os, smart_home) : ostream&
+    --
+    - SmartHome(const SmartHome&) = delete
+    - operator=(const SmartHome&) = delete
+    - SmartHome(SmartHome&&) = delete
+    - operator=(SmartHome&&) = delete
 }
 
 class Speaker {
+    - {static} next_id_ : atomic<size_t>
+    - id_ : const size_t
     - name_ : string
     - devices_ : map<string, shared_ptr<Device>>
     - room_ : Room
     --
     + Speaker(speaker_name, room_name, room_number, room_type)
+    + get_id() : size_t
     + get_name() : const string&
     + add_device(device) : bool
     + remove_device(id) : bool
@@ -47,24 +57,36 @@ class Speaker {
     + get_room() : const Room&
     + get_device_count() : size_t
     + to_string() : string
+    --
+    - Speaker(const Speaker&) = delete
+    - operator=(const Speaker&) = delete
+    - Speaker(Speaker&&) = delete
+    - operator=(Speaker&&) = delete
 }
 
 class "Speaker::Room" as Room {
+    - {static} next_id_ : atomic<size_t>
+    - id_ : const size_t
     - name_ : string
     - room_number_ : int
     - room_type_ : RoomType
     --
     + {static} room_type_to_string(type) : string
     + Room(name, room_number, type)
+    + get_id() : size_t
     + get_name() : const string&
     + get_room_number() : int
     + get_room_type() : RoomType
     + to_string() : string
     --
     + enum RoomType { LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY }
+    - Room(const Room&) = delete
+    - operator=(const Room&) = delete
+    - Room(Room&&) = delete
+    - operator=(Room&&) = delete
 }
 
-abstract class Device {
+class Device {
     # id_ : const string
     # name_ : const string
     # status_ : DeviceStatus
@@ -75,7 +97,6 @@ abstract class Device {
     + get_name() : const string&
     + get_status() : DeviceStatus
     + set_status(status) : void
-    + {abstract} clone() : shared_ptr<Device>
     --
     + enum DeviceStatus { ONLINE, OFFLINE }
 }
@@ -123,8 +144,6 @@ interface IMeasurable {
     + {abstract} calibrate() : void
 }
 
-
-
 class VacuumCleaner {
     - power_state_ : PowerState
     - battery_level_ : int
@@ -134,7 +153,6 @@ class VacuumCleaner {
     + turn_off() : void
     + get_power_state() : PowerState
     + get_battery_level() : int
-    + clone() : shared_ptr<Device>
     + to_string() : string
 }
 
@@ -148,7 +166,6 @@ class SmartLight {
     + get_power_state() : PowerState
     + set_brightness(level) : void
     + get_brightness() : int
-    + clone() : shared_ptr<Device>
     + to_string() : string
 }
 
@@ -162,7 +179,6 @@ class Thermometer {
     + get_unit() : const string&
     + get_is_calibrated() : bool
     + calibrate() : void
-    + clone() : shared_ptr<Device>
     + to_string() : string
 }
 
@@ -183,7 +199,6 @@ class SmartKettle {
     + calibrate() : void
     + set_target_temperature(temp) : void
     + set_temperature_unit(unit) : void
-    + clone() : shared_ptr<Device>
     + to_string() : string
 }
 

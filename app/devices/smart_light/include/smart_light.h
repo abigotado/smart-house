@@ -17,7 +17,6 @@ class SmartLight : public Device, public IActivatable {
         void turn_off() noexcept override;
         [[nodiscard]] IActivatable::PowerState get_power_state() const noexcept override;
 
-        std::shared_ptr<Device> clone() const override;
         std::string to_string() const override;
 
         /// Устанавливает яркость (0-100)
@@ -29,4 +28,4 @@ class SmartLight : public Device, public IActivatable {
         int brightness_ = 100;
 };
 
-}
+} // namespace smart_house
