@@ -8,6 +8,6 @@ add_library(smart_kettle STATIC source/smart_kettle.cpp)
 
 target_include_directories(smart_kettle PUBLIC include)
 
-target_link_libraries(smart_kettle PUBLIC device interfaces)
+target_link_libraries(smart_kettle PUBLIC device shared temperature_manager)
 
 target_compile_features(smart_kettle PUBLIC cxx_std_20) 

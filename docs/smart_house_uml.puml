@@ -2,170 +2,230 @@
 
 !theme plain
 skinparam classAttributeIconSize 0
-skinparam classFontSize 9
-skinparam packageFontSize 11
+skinparam classFontSize 14
+skinparam packageFontSize 12
 skinparam dpi 150
 skinparam linetype ortho
-skinparam nodesep 10
-skinparam ranksep 30
+skinparam nodesep 30
+skinparam ranksep 45
+skinparam minClassWidth 140
+skinparam maxClassWidth 350
+skinparam wrapWidth 320
 
 title "Система Умного Дома - Диаграмма Классов"
 
 class SmartHome {
-    - speakers : map<string, Speaker>
+    - {static} next_id_ : atomic<size_t>
+    - id_ : const size_t
+    - speakers_ : map<string, Speaker>
     --
-    + addSpeaker(name, roomType) : bool
-    + removeSpeaker(name) : bool
-    + getSpeaker(name) : Speaker*
-    + getSpeaker(name) : const Speaker*
-    + getAllSpeakers() : const map<string, Speaker>&
-    + getSpeakerCount() : size_t
-    + activateAllSpeakers() : void
-    + toString() : string
-    + operator[](name) : Speaker&
-    + operator[](name) : const Speaker&
-    + operator<<(os, smartHome) : ostream&
+    + SmartHome()
+    + get_id() : size_t
+    + add_speaker(name, room) : bool
+    + move_speaker(name, new_room) : bool
+    + remove_speaker(name) : bool
+    + size() : size_t
+    + to_string() : string
+    + operator[](name : string) : Speaker&
+    + operator[](name : string) : const Speaker&
+    + operator[](index : size_t) : Speaker&
+    + operator[](index : size_t) : const Speaker&
+    + operator<<(os, smart_home) : ostream&
+    --
+    - SmartHome(const SmartHome&) = delete
+    - operator=(const SmartHome&) = delete
+    - SmartHome(SmartHome&&) = delete
+    - operator=(SmartHome&&) = delete
 }
 
 class Speaker {
-    - devices : map<string, shared_ptr<Device>>
-    - room : Room
+    - name_ : string
+    - devices_ : map<string, shared_ptr<Device>>
+    - room_ : Room
     --
-    + Speaker(roomType)
-    + addDevice(device) : bool
-    + removeDevice(id) : bool
-    + getDevice(id) : shared_ptr<Device>
-    + getDevice(id) : const shared_ptr<Device>
-    + getAllDevices() : const map<string, shared_ptr<Device>>&
-    + activateAllDevices() : void
-    + deactivateAllDevices() : void
-    + getRoomType() : RoomType
-    + getDeviceCount() : size_t
-    + toString() : string
+    + Speaker(speaker_name, room)
+    + get_name() : const string&
+    + add_device(device) : bool
+    + remove_device(id) : bool
+    + get_device(id) : shared_ptr<Device>
+    + get_device(id) : const shared_ptr<Device>
+    + get_all_devices() : const map<string, shared_ptr<Device>>&
+    + check_and_activate_devices() : void
+    + get_room_type() : RoomType
+    + get_room() : const Room&
+    + get_device_count() : size_t
+    + move_to_room(new_room) : void
+    + rename(new_name) : bool
+    + to_string() : string
+    --
+    - Speaker(const Speaker&) = delete
+    - operator=(const Speaker&) = delete
+    - Speaker(Speaker&&) = delete
+    - operator=(Speaker&&) = delete
 }
 
-class "Speaker::Room" as Room {
-    - roomType : RoomType
-    - area : double
-    - description : string
+struct "Speaker::Room" as Room {
+    + name : string
+    + room_number : int
+    + room_type : RoomType
     --
-    + Room(type, area, desc)
-    + getRoomType() : RoomType
-    + getArea() : double
-    + getDescription() : const string&
-    + setDescription(desc) : void
+    + Room(name, room_number, type)
     --
-    + enum RoomType { LIVING_ROOM, BEDROOM, CHILDREN_ROOM, RESTROOM, KITCHEN, BALCONY }
+    + enum RoomType { LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY }
 }
 
-abstract class Device {
-    # id : const string
-    # name : const string
-    # status : Status
+class Device {
+    # id_ : const string
+    # name_ : const string
+    # status_ : DeviceStatus
     --
-    + Device(id, name)
-    + getId() : const string&
-    + getName() : const string&
-    + getStatus() : Status
-    + setStatus(status) : void
-    + toString() : string
-    + {abstract} clone() : unique_ptr<Device>
+    + Device(name)
+    + Device(other)
+    + ~Device()
+    + get_id() : const string&
+    + get_name() : const string&
+    + get_status() : DeviceStatus
+    + set_status(status) : void
+    + clone() : shared_ptr<Device>
     --
-    + enum Status { ONLINE, OFFLINE }
+    + enum DeviceStatus { ONLINE, OFFLINE }
+    - operator=(const Device&) = delete
+    + Device(Device&&) = default
+    + operator=(Device&&) = default
+}
+
+abstract class Object {
+    --
+    + ~Object()
+    + {abstract} to_string() : string
+    --
+    # Object()
+}
+
+enum TemperatureUnit {
+    CELSIUS
+    FAHRENHEIT
+    KELVIN
+}
+
+class TemperatureManager {
+    - temperature_unit_ : TemperatureUnit
+    --
+    + TemperatureManager(unit = CELSIUS)
+    + set_unit(unit) : void
+    + get_unit() : TemperatureUnit
+    + get_unit_string() : string
+    + convert_to_unit(value, from) : double
+    + {static} unit_to_string(unit) : string
+    + {static} convert(value, from, to) : double
 }
 
 interface IActivatable {
-    + {abstract} turnOn() : bool
-    + {abstract} turnOff() : bool
-    + {abstract} isOn() : bool
+    + ~IActivatable()
+    + {abstract} turn_on() : void
+    + {abstract} turn_off() : void
+    + {abstract} get_power_state() : PowerState
     --
     + enum PowerState { ON, OFF }
 }
 
 interface IMeasurable {
-    + {abstract} readValue() : double
-    + {abstract} getUnit() : const string&
-    + {abstract} isCalibrated() : bool
-    + {abstract} calibrate() : bool
+    + ~IMeasurable()
+    + {abstract} read_value() : double
+    + {abstract} get_unit() : const string&
+    + {abstract} get_is_calibrated() : bool
+    + {abstract} calibrate() : void
 }
 
 class VacuumCleaner {
-    - powerState : PowerState
-    - batteryLevel : int
+    - power_state_ : PowerState
+    - battery_level_ : int
     --
-    + VacuumCleaner(id, name)
-    + turnOn() : bool
-    + turnOff() : bool
-    + isOn() : bool
-    + getBatteryLevel() : int
-    + clone() : unique_ptr<Device>
+    + VacuumCleaner(name)
+    + clone() : shared_ptr<Device>
+    + turn_on() : void
+    + turn_off() : void
+    + get_power_state() : PowerState
+    + get_battery_level() : int
+    + to_string() : string
 }
 
 class SmartLight {
-    - powerState : PowerState
-    - brightness : int
+    - power_state_ : PowerState
+    - brightness_ : int
     --
-    + SmartLight(id, name)
-    + turnOn() : bool
-    + turnOff() : bool
-    + isOn() : bool
-    + setBrightness(level) : bool
-    + getBrightness() : int
-    + clone() : unique_ptr<Device>
+    + SmartLight(name)
+    + clone() : shared_ptr<Device>
+    + turn_on() : void
+    + turn_off() : void
+    + get_power_state() : PowerState
+    + set_brightness(level) : void
+    + get_brightness() : int
+    + to_string() : string
 }
 
 class Thermometer {
-    - temperature : double
-    - calibrated : bool
+    - temperature_ : double
+    - is_calibrated_ : bool
+    - temp_manager_ : TemperatureManager
     --
-    + Thermometer(id, name)
-    + readValue() : double
-    + getUnit() : const string&
-    + isCalibrated() : bool
-    + calibrate() : bool
-    + clone() : unique_ptr<Device>
+    + Thermometer(name, unit = CELSIUS)
+    + clone() : shared_ptr<Device>
+    + read_value() : double
+    + get_unit() : const string&
+    + get_is_calibrated() : bool
+    + calibrate() : void
+    + to_string() : string
 }
 
 class SmartKettle {
-    - powerState : PowerState
-    - temperature : double
-    - calibrated : bool
-    - targetTemp : double
+    - power_state_ : PowerState
+    - temperature_ : double
+    - calibrated_ : bool
+    - target_temp_ : double
+    - temp_manager_ : TemperatureManager
     --
-    + SmartKettle(id, name)
-    + turnOn() : bool
-    + turnOff() : bool
-    + isOn() : bool
-    + readValue() : double
-    + getUnit() : const string&
-    + isCalibrated() : bool
-    + calibrate() : bool
-    + setTargetTemperature(temp) : bool
-    + clone() : unique_ptr<Device>
+    + SmartKettle(name, unit = CELSIUS)
+    + clone() : shared_ptr<Device>
+    + turn_on() : void
+    + turn_off() : void
+    + get_power_state() : PowerState
+    + read_value() : double
+    + get_unit() : const string&
+    + get_is_calibrated() : bool
+    + calibrate() : void
+    + set_target_temperature(temp) : void
+    + set_temperature_unit(unit) : void
+    + to_string() : string
 }
 
-' Горизонтальное размещение интерфейсов
+' Оптимизированное размещение для заполнения A4
+SmartHome -[hidden]right- Object
+Object -[hidden]right- TemperatureManager
+SmartHome -[hidden]down-> Speaker
+Speaker -[hidden]right- Room
+Object -[hidden]down-> Device
+Device -[hidden]right- TemperatureManager
+TemperatureManager -[hidden]down- TemperatureUnit
+Device -[hidden]down-> IActivatable
 IActivatable -[hidden]right- IMeasurable
-
-' Горизонтальное размещение устройств
 VacuumCleaner -[hidden]right- SmartLight
 Thermometer -[hidden]right- SmartKettle
-
-' Вертикальная последовательность
-SmartHome -[hidden]down-> Speaker
-Speaker -[hidden]down-> Room
-Room -[hidden]down-> Device
-Device -[hidden]down-> IActivatable
 IActivatable -[hidden]down-> VacuumCleaner
+IMeasurable -[hidden]down-> Thermometer
 
 ' Композиция
 SmartHome *-- Speaker : "содержит"
-Speaker *-- Room : "nested class"
+Speaker *-- Room
 
 ' Управление устройствами
-Speaker o-- Device : "управляет"
+Speaker --> Device : "управляет"
 
 ' Наследование
+Object <|-- Device
+Object <|-- SmartHome
+Object <|-- Speaker
+Object <|-- Room
 Device <|-- VacuumCleaner
 Device <|-- SmartLight
 Device <|-- Thermometer
@@ -177,5 +237,12 @@ IActivatable <|.. SmartLight
 IMeasurable <|.. Thermometer
 IActivatable <|.. SmartKettle
 IMeasurable <|.. SmartKettle
+
+' Композиция с TemperatureManager
+TemperatureManager <--* Thermometer : "содержит"
+TemperatureManager <--* SmartKettle : "содержит"
+
+' Использование enum TemperatureUnit
+TemperatureManager --> TemperatureUnit : "использует"
 
 @enduml 

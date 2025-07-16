@@ -8,6 +8,6 @@ add_library(smart_light STATIC source/smart_light.cpp)
 
 target_include_directories(smart_light PUBLIC include)
 
-target_link_libraries(smart_light PUBLIC device interfaces)
+target_link_libraries(smart_light PUBLIC device shared)
 
 target_compile_features(smart_light PUBLIC cxx_std_20) 

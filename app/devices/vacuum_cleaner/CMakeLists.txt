@@ -8,6 +8,6 @@ add_library(vacuum_cleaner STATIC source/vacuum_cleaner.cpp)
 
 target_include_directories(vacuum_cleaner PUBLIC include)
 
-target_link_libraries(vacuum_cleaner PUBLIC device interfaces)
+target_link_libraries(vacuum_cleaner PUBLIC device shared)
 
 target_compile_features(vacuum_cleaner PUBLIC cxx_std_20) 
