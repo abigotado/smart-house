@@ -36,7 +36,7 @@ class Device : public Object {
 
             [[nodiscard]] const std::string& get_id() const noexcept;
             [[nodiscard]] const std::string& get_name() const noexcept;
-            [[nodiscard]] const DeviceStatus get_status() const noexcept;
+            [[nodiscard]] DeviceStatus get_status() const noexcept;
             void set_status(DeviceStatus status) noexcept;
 
         /// Создает копию устройства

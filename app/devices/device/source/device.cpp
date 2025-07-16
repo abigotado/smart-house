@@ -1,4 +1,3 @@
-// Базовый класс Device - будет реализован позже
 #include "device.h"
 #include <random>
 #include <sstream>
