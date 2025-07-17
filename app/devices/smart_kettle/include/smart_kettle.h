@@ -23,7 +23,7 @@ class SmartKettle : public Device, public IActivatable, public IMeasurable {
         // Интерфейс IActivatable
         void turn_on() noexcept override;
         void turn_off() noexcept override;
-        IActivatable::PowerState get_power_state() const noexcept override;
+        [[nodiscard]] IActivatable::PowerState get_power_state() const noexcept override;
         
         // Интерфейс IMeasurable
         [[nodiscard]] double read_value() const noexcept override;
