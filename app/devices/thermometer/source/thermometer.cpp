@@ -5,6 +5,11 @@
  
 namespace smart_house {
 
+    Thermometer::Thermometer(const std::string& name, TemperatureUnit unit) 
+        : Device(name), temp_manager_(unit) {
+        simulate_measurement(); // Выполняем первое измерение
+    }
+
     Thermometer::Thermometer(const Thermometer& other)
         : Device(other.get_name()),
           temperature_(other.temperature_),
@@ -32,7 +37,9 @@ namespace smart_house {
     }
 
     const std::string& Thermometer::get_unit() const noexcept {
-        return temp_manager_.get_unit_string();
+        static std::string unit_cache;
+        unit_cache = temp_manager_.get_unit_string();
+        return unit_cache;
     }
 
     bool Thermometer::get_is_calibrated() const noexcept {
@@ -47,7 +54,11 @@ namespace smart_house {
     }
 
     void Thermometer::set_temperature_unit(TemperatureUnit unit) noexcept {
-        temp_manager_.set_unit(unit);
+        auto old_unit = temp_manager_.get_unit();
+        if (old_unit != unit) {
+            temperature_ = TemperatureManager::convert(temperature_, old_unit, unit);
+            temp_manager_.set_unit(unit);
+        }
     }
 
     void Thermometer::simulate_measurement() {

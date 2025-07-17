@@ -1,4 +1,10 @@
-include(CTest)
+cmake_minimum_required(VERSION 3.20)
+project(tests)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Подключаем Catch2 через FetchContent
 include(FetchContent)
 FetchContent_Declare(
   Catch2
@@ -7,47 +13,38 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-# Модульные тесты для библиотеки Smart House
+# Тест производительности и многопоточности
+add_executable(test_performance test_performance.cpp)
 
-# Включение подпапок с тестами
+target_include_directories(test_performance PRIVATE
+    ../app/home/include
+    ../app/speaker/include
+    ../app/devices/device/include
+    ../app/devices/vacuum_cleaner/include
+    ../app/devices/smart_light/include
+    ../app/devices/thermometer/include
+    ../app/devices/smart_kettle/include
+    ../app/shared/include
+    ../app/temperature_manager/include
+)
+
+target_link_libraries(test_performance
+    home
+    speaker
+    vacuum_cleaner
+    smart_light
+    thermometer
+    smart_kettle
+    device
+    shared
+    temperature_manager
+    Catch2::Catch2WithMain
+)
+
+# Включение модульных тестов
 add_subdirectory(unit_tests)
 
-# Поиск исходных файлов тестов в корневой папке тестов
-file(GLOB TEST_SOURCES "*.cpp")
-
-# Создание исполняемых файлов для каждого теста
-foreach(test_source ${TEST_SOURCES})
-    # Получение имени файла без расширения
-    get_filename_component(test_name ${test_source} NAME_WE)
-    
-    # Создание исполняемого файла теста
-    add_executable(${test_name} ${test_source})
-    
-    # Линковка с основной библиотекой
-    target_link_libraries(${test_name} PRIVATE SmartHouse)
-    
-    # Установка свойств
-    set_target_properties(${test_name} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-    )
-    
-    # Добавление теста в CTest
-    add_test(NAME ${test_name} COMMAND ${test_name})
-    
-    message(STATUS "Added test: ${test_name}")
-endforeach()
-
-# Создание общего тестового исполняемого файла, если есть main_test.cpp
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp")
-    add_executable(run_all_tests main_test.cpp)
-    target_link_libraries(run_all_tests PRIVATE SmartHouse)
-    set_target_properties(run_all_tests PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-    )
-    add_test(NAME run_all_tests COMMAND run_all_tests)
-    message(STATUS "Added main test runner: run_all_tests")
-endif()
-
-# Информация
-message(STATUS "Tests will be built in: ${CMAKE_BINARY_DIR}/tests")
-message(STATUS "Run tests with: ctest --test-dir ${CMAKE_BINARY_DIR}") 
+# Запускаем тесты
+include(CTest)
+include(Catch)
+catch_discover_tests(test_performance) 

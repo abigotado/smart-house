@@ -1,73 +1,130 @@
 # Тесты для Smart House
 
-Эта папка содержит все тесты для библиотеки Smart House.
+Этот каталог содержит тесты для системы умного дома.
 
-## Структура
+## Структура тестов
 
 ```
 tests/
-├── CMakeLists.txt              # Основной CMake файл для тестов
-├── README.md                   # Этот файл
-└── unit_tests/                 # Модульные тесты
-    ├── CMakeLists.txt          # CMake файл для модульных тестов
-    └── devices/                # Тесты устройств
-        ├── CMakeLists.txt      # CMake файл для тестов устройств
-        └── test_smart_kettle.cpp # Тест для SmartKettle
+├── test_performance.cpp         # Тесты производительности и многопоточности
+├── README.md                    # Этот файл
+└── unit_tests/                  # Модульные тесты
+    ├── test_smart_home_fast.cpp # Быстрые тесты SmartHome
+    └── devices/                 # Тесты устройств
+        ├── test_smart_light.cpp
+        ├── test_thermometer.cpp
+        ├── test_vacuum_cleaner.cpp
+        └── test_smart_kettle.cpp
 ```
 
-## Запуск тестов
+## Типы тестов
 
-### Сборка тестов
+### 1. Модульные тесты (unit_tests/)
+Быстрые тесты отдельных компонентов без асинхронных задержек.
+
+**Преимущества:**
+- Выполняются мгновенно
+- Тестируют конкретную функциональность
+- Идеальны для разработки и отладки
+
+**Команды:**
 ```bash
-cd build
-make -j4
+# Тест SmartHome
+./build/tests/unit_tests/test_smart_home_fast
+
+# Тесты устройств
+./build/tests/unit_tests/devices/test_smart_light
+./build/tests/unit_tests/devices/test_thermometer
+./build/tests/unit_tests/devices/test_vacuum_cleaner
+./build/tests/unit_tests/devices/test_smart_kettle
 ```
 
-### Запуск всех тестов
+### 2. Тесты производительности (test_performance.cpp)
+Проверяют масштабируемость, многопоточность и производительность системы.
+
+**Проверяет:**
+- Создание множества устройств и колонок
+- Многопоточные операции
+- Утечки памяти
+- Производительность UUID генерации
+
+**Команда:**
 ```bash
-cd build
-ctest --test-dir .
+./build/tests/test_performance
 ```
 
-### Запуск конкретного теста
+## Сборка тестов
+
 ```bash
-cd build
-./tests/unit_tests/devices/test_smart_kettle
+# Собрать все тесты
+cmake -S . -B build
+cmake --build build
+
+# Собрать конкретные тесты
+cmake --build build --target test_performance
+cmake --build build --target test_smart_home_fast
+cmake --build build --target test_smart_light
+cmake --build build --target test_thermometer
+cmake --build build --target test_vacuum_cleaner
 ```
+
+## Запуск всех тестов
+
+```bash
+# Через CTest
+ctest --test-dir build
+
+# Или запустить каждый тест отдельно
+./build/tests/test_performance
+./build/tests/unit_tests/test_smart_home_fast
+./build/tests/unit_tests/devices/test_smart_light
+./build/tests/unit_tests/devices/test_thermometer
+./build/tests/unit_tests/devices/test_vacuum_cleaner
+./build/tests/unit_tests/devices/test_smart_kettle
+```
+
+## Результаты тестирования
+
+### Модульные тесты
+- **SmartHome**: 23 проверки ✅
+- **SmartLight**: 27 проверок ✅
+- **Thermometer**: 25 проверок ✅
+- **VacuumCleaner**: 17 проверок ✅
+
+### Тесты производительности
+- **Performance**: 21 проверка ✅
+- **Thread Safety**: Все проверки ✅
 
 ## Добавление новых тестов
 
-### Для устройств
-1. Создайте файл `test_<device_name>.cpp` в папке `tests/unit_tests/devices/`
-2. CMake автоматически найдет и соберет новый тест
+1. Создайте файл теста в соответствующей папке
+2. Добавьте тест в CMakeLists.txt
+3. Убедитесь, что тест проходит
 
-### Для других компонентов
-1. Создайте новую папку в `tests/unit_tests/` (например, `home/`, `speaker/`)
-2. Добавьте `CMakeLists.txt` в новую папку
-3. Обновите `tests/unit_tests/CMakeLists.txt`, добавив `add_subdirectory(новая_папка)`
+### Пример для нового устройства:
 
-## Примеры тестов
-
-### Тест устройства
 ```cpp
-#include "app/devices/smart_kettle/include/smart_kettle.h"
-#include <iostream>
+// tests/unit_tests/devices/test_new_device.cpp
+#include <catch2/catch_test_macros.hpp>
+#include "../../../app/devices/new_device/include/new_device.h"
 
-int main() {
-    using namespace smart_house;
+using namespace smart_house;
+
+TEST_CASE("NewDevice basic functionality", "[new_device]") {
+    NewDevice device("Тестовое устройство");
     
-    SmartKettle kettle("Тестовый чайник");
-    std::cout << "Создан: " << kettle.to_string() << std::endl;
+    SECTION("Initial state") {
+        REQUIRE(device.get_name() == "Тестовое устройство");
+        REQUIRE(!device.get_id().empty());
+    }
     
-    // Тестирование функциональности...
-    
-    return 0;
+    // Добавьте другие тесты...
 }
 ```
 
 ## Примечания
 
-- Все тесты собираются в папку `build/tests/`
-- Тесты устройств собираются в `build/tests/unit_tests/devices/`
-- Используйте `ctest` для автоматического запуска всех тестов
-- Каждый тест должен быть независимым исполняемым файлом 
+- Модульные тесты не содержат асинхронных задержек для быстрого выполнения
+- Тесты производительности могут занимать больше времени
+- Все тесты используют Catch2 framework
+- Структура тестов соответствует архитектуре приложения 

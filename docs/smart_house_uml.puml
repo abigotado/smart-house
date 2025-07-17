@@ -220,6 +220,7 @@ class SmartKettle {
     + get_is_calibrated() : bool
     + calibrate() : void
     + set_target_temperature(temp) : void
+    + get_target_temperature() : double
     + set_temperature_unit(unit) : void
     + to_string() : string
     --
