@@ -23,7 +23,7 @@ public:
     SmartHome& operator=(SmartHome&&) = delete;
 
     /// Получает уникальный ID дома
-    [[nodiscard]] std::size_t get_id() const noexcept;
+    [[nodiscard]] const std::string& get_id() const noexcept;
 
     /// Добавляет колонку
     bool add_speaker(const std::string& name, const Speaker::Room& room);
@@ -31,11 +31,17 @@ public:
     /// Перемещает колонку в другую комнату
     bool move_speaker(const std::string& name, const Speaker::Room& new_room);
 
+    /// Переименовывает колонку
+    bool rename_speaker(const std::string& old_name, const std::string& new_name);
+
     /// Удаляет колонку по имени
     bool remove_speaker(const std::string& name);
 
     /// Возвращает количество колонок
     [[nodiscard]] std::size_t size() const noexcept;
+
+    /// Возвращает константную ссылку на все колонки
+    [[nodiscard]] const std::map<std::string, Speaker>& get_speakers() const noexcept;
 
     [[nodiscard]] std::string to_string() const override;
 
@@ -43,16 +49,11 @@ public:
     [[nodiscard]] Speaker& operator[](const std::string& name);
     [[nodiscard]] const Speaker& operator[](const std::string& name) const;
 
-    /// Доступ к колонке по индексу
-    [[nodiscard]] Speaker& operator[](std::size_t index);
-    [[nodiscard]] const Speaker& operator[](std::size_t index) const;
-
     /// Вывод в поток (сортированный список колонок)
     friend std::ostream& operator<<(std::ostream& os, const SmartHome& smart_home);
 
 private:
-    static std::atomic<std::size_t> next_id_;
-    const std::size_t id_;
+    std::string id_;
     std::map<std::string, Speaker> speakers_;
 };
 

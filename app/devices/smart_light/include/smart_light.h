@@ -12,6 +12,10 @@ class SmartLight : public Device, public IActivatable {
     public:
         using Device::Device;
 
+        SmartLight(const SmartLight& other);        
+        SmartLight(SmartLight&& other) noexcept;
+        SmartLight& operator=(SmartLight&& other) noexcept;
+
         // Интерфейс IActivatable
         void turn_on() noexcept override;
         void turn_off() noexcept override;

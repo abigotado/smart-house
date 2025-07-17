@@ -19,4 +19,6 @@ class Object {
         Object() = default;
 };
 
+std::ostream& operator<<(std::ostream& os, const Object& obj);
+
 } 

@@ -12,7 +12,15 @@ namespace smart_house {
 class Thermometer : public Device, public IMeasurable {
     public:
         Thermometer(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS) 
-            : Device(name), temp_manager_(unit) {};
+            : Device(name), temp_manager_(unit) {
+            simulate_measurement(); // Выполняем первое измерение
+        };
+        
+        /// Конструктор копирования
+        Thermometer(const Thermometer& other);
+        
+        Thermometer(Thermometer&& other) noexcept;
+        Thermometer& operator=(Thermometer&& other) noexcept;
         
         // Интерфейс IMeasurable
         double read_value() const noexcept override;
@@ -29,6 +37,9 @@ class Thermometer : public Device, public IMeasurable {
         std::shared_ptr<Device> clone() const override;
 
     private:
+        /// Имитирует измерение температуры (устанавливает случайное значение)
+        void simulate_measurement();
+        
         double temperature_ = 0.0;
         bool is_calibrated_ = false;
         TemperatureManager temp_manager_;

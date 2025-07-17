@@ -1,32 +1,23 @@
-// Базовый класс Device - будет реализован позже
 #include "device.h"
-#include <random>
-#include <sstream>
-#include <iomanip>
+#include "../../../shared/include/uuid.h"
 
 namespace smart_house {
 
-std::string generate_device_uuid() {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    static std::uniform_int_distribution<> dis(0, 15);
-    
-    std::stringstream ss;
-    ss << "device_";
-    for (int i = 0; i < 8; ++i) {
-        ss << std::hex << dis(gen);
-    }
-    return ss.str();
-}
-
 Device::Device(const std::string& name)
-    : id_(generate_device_uuid()), name_(name), status_(DeviceStatus::OFFLINE) {
+    : id_(generate_uuid()), name_(name), status_(DeviceStatus::OFFLINE) {
 }
 
 Device::Device(const Device& other)
-    : id_(generate_device_uuid()), // Новый UUID при копировании
+    : id_(generate_uuid()), // Новый UUID при копировании
       name_(other.name_), 
       status_(other.status_) {
+}
+
+Device::Device(Device&& other) noexcept
+    : id_(generate_uuid()), // Новый UUID при перемещении
+      name_(std::move(other.name_)), 
+      status_(other.status_) {
+    other.status_ = DeviceStatus::OFFLINE; // Сбрасываем статус исходного объекта
 }
 
 const std::string& Device::get_id() const noexcept {
@@ -43,6 +34,16 @@ Device::DeviceStatus Device::get_status() const noexcept {
 
 void Device::set_status(DeviceStatus status) noexcept {
     status_ = status;
+}
+
+Device& Device::operator=(Device&& other) noexcept {
+    if (this != &other) {
+        id_ = generate_uuid(); // Новый UUID при перемещении
+        name_ = std::move(other.name_);
+        status_ = other.status_;
+        other.status_ = DeviceStatus::OFFLINE; // Сбрасываем статус исходного объекта
+    }
+    return *this;
 }
 
 } // namespace smart_house 
