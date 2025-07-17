@@ -96,7 +96,7 @@ class Device {
 abstract class Object {
     --
     + ~Object()
-    + {abstract} [[nodiscard]] to_string() const : string
+    + to_string() const : string
     --
     # Object()
 }
