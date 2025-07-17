@@ -137,10 +137,15 @@ interface IMeasurable {
 }
 
 class VacuumCleaner {
-    - power_state_ : PowerState
-    - battery_level_ : int
+    - mutable mutex_ : shared_mutex
+    - power_state_ : atomic<PowerState>
+    - battery_level_ : atomic<int>
+    - on_dock_ : atomic<bool>
+    - charge_future_ : future<void>
+    - MIN_BATTERY_FOR_WORK : const int = 20
     --
     + VacuumCleaner(name)
+    + VacuumCleaner(other)
     + VacuumCleaner(VacuumCleaner&&) noexcept
     + operator=(VacuumCleaner&&) noexcept
     + clone() : shared_ptr<Device>
@@ -148,7 +153,13 @@ class VacuumCleaner {
     + turn_off() : void
     + get_power_state() : PowerState
     + get_battery_level() : int
+    + is_on_dock() : bool
+    + dock() : void
     + to_string() : string
+    --
+    - undock() : void
+    - work_async() : future<void>
+    - charge_async() : future<void>
 }
 
 class SmartLight {
@@ -156,6 +167,7 @@ class SmartLight {
     - brightness_ : int
     --
     + SmartLight(name)
+    + SmartLight(SmartLight&) : SmartLight
     + SmartLight(SmartLight&&) noexcept
     + operator=(SmartLight&&) noexcept
     + clone() : shared_ptr<Device>
@@ -173,6 +185,7 @@ class Thermometer {
     - temp_manager_ : TemperatureManager
     --
     + Thermometer(name, unit = CELSIUS)
+    + Thermometer(Thermometer&) : Thermometer
     + Thermometer(Thermometer&&) noexcept
     + operator=(Thermometer&&) noexcept
     + clone() : shared_ptr<Device>
@@ -180,7 +193,10 @@ class Thermometer {
     + get_unit() : const string&
     + get_is_calibrated() : bool
     + calibrate() : void
+    + set_temperature_unit(unit) : void
     + to_string() : string
+    --
+    - simulate_measurement() : void
 }
 
 class SmartKettle {

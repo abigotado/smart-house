@@ -7,7 +7,7 @@ namespace smart_house {
     SmartHome::SmartHome() : id_(generate_uuid()) {}
 
     Speaker& SmartHome::operator[](const std::string& name) {
-        return speakers_[name];
+        return speakers_.at(name);
     }
 
     const Speaker& SmartHome::operator[](const std::string& name) const {
@@ -22,7 +22,7 @@ namespace smart_house {
         if (speakers_.find(name) != speakers_.end()) {
             return false;
         }
-        speakers_[name] = Speaker(name, room);
+        speakers_.try_emplace(name, name, room);
         return true;
     }
 
@@ -30,7 +30,8 @@ namespace smart_house {
         if (speakers_.find(name) == speakers_.end()) {
             return false;
         }
-        speakers_[name].move_to_room(new_room);
+        // speakers_[name].move_to_room(new_room);
+        speakers_.at(name).move_to_room(new_room);
         return true;
     }
 
