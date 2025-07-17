@@ -15,21 +15,20 @@ skinparam wrapWidth 320
 title "Система Умного Дома - Диаграмма Классов"
 
 class SmartHome {
-    - {static} next_id_ : atomic<size_t>
-    - id_ : const size_t
+    - id_ : string
     - speakers_ : map<string, Speaker>
     --
     + SmartHome()
     + get_id() : size_t
     + add_speaker(name, room) : bool
     + move_speaker(name, new_room) : bool
+    + rename_speaker(old_name, new_name) : bool
     + remove_speaker(name) : bool
     + size() : size_t
+    + get_speakers() : const map<string, Speaker>&
     + to_string() : string
     + operator[](name : string) : Speaker&
     + operator[](name : string) : const Speaker&
-    + operator[](index : size_t) : Speaker&
-    + operator[](index : size_t) : const Speaker&
     + operator<<(os, smart_home) : ostream&
     --
     - SmartHome(const SmartHome&) = delete
@@ -55,13 +54,13 @@ class Speaker {
     + get_room() : const Room&
     + get_device_count() : size_t
     + move_to_room(new_room) : void
-    + rename(new_name) : bool
     + to_string() : string
     --
+    - Speaker(Speaker&&) = default
+    - operator=(Speaker&&) = default
+    - rename(new_name) : bool
     - Speaker(const Speaker&) = delete
     - operator=(const Speaker&) = delete
-    - Speaker(Speaker&&) = delete
-    - operator=(Speaker&&) = delete
 }
 
 struct "Speaker::Room" as Room {

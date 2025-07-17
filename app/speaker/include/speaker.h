@@ -18,9 +18,9 @@ public:
     /**
      * @brief Типы комнат
      */
-    enum class RoomType {
-        LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY
-    };
+        enum class RoomType {
+            LIVING_ROOM, CORRIDOR, RESTROOM, KITCHEN, BALCONY
+        };
 
     /**
      * @brief Структура с данными комнаты
@@ -34,20 +34,16 @@ public:
             : name(name), room_number(room_number), room_type(type) {}
     };
 
-    /// Преобразует тип комнаты в строку
-    static std::string room_type_to_string(RoomType type);
+        /// Преобразует тип комнаты в строку
+        static std::string room_type_to_string(RoomType type);
 
     /// Конструктор с готовой структурой Room
     Speaker(const std::string& speaker_name, const Room& room);
 
-    // Запрещаем копирование
+    /// Запрещаем копирование
     Speaker(const Speaker&) = delete;
     Speaker& operator=(const Speaker&) = delete;
     
-    // Разрешаем перемещение
-    Speaker(Speaker&&) = default;
-    Speaker& operator=(Speaker&&) = default;
-
     /// Получает имя колонки (для сортировки)
     [[nodiscard]] const std::string& get_name() const noexcept;
 
@@ -71,11 +67,19 @@ public:
     /// Перемещает колонку в другую комнату
     void move_to_room(const Room& new_room);
     
-    /// Переименовывает колонку
-    bool rename(const std::string& new_name);
     [[nodiscard]] std::string to_string() const override;
 
+    /// Разрешаем SmartHome доступ к приватным полям
+    friend class SmartHome;
+
 private:
+    /// Перемещение (фактически доступно только для SmartHome)
+    Speaker(Speaker&&) = default;
+    Speaker& operator=(Speaker&&) = default;
+    
+    /// Переименовывает колонку
+    bool rename(const std::string& new_name);
+    
     std::string name_;
     std::map<std::string, std::shared_ptr<Device>> devices_;
     Room room_;
