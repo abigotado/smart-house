@@ -29,7 +29,6 @@ class SmartHome {
     + to_string() : string
     + operator[](name : string) : Speaker&
     + operator[](name : string) : const Speaker&
-    + operator<<(os, smart_home) : ostream&
     --
     - SmartHome(const SmartHome&) = delete
     - operator=(const SmartHome&) = delete
