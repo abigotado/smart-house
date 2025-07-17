@@ -1,6 +1,18 @@
+include(CTest)
+include(FetchContent)
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.5.4
+)
+FetchContent_MakeAvailable(Catch2)
+
 # Модульные тесты для библиотеки Smart House
 
-# Поиск исходных файлов тестов
+# Включение подпапок с тестами
+add_subdirectory(unit_tests)
+
+# Поиск исходных файлов тестов в корневой папке тестов
 file(GLOB TEST_SOURCES "*.cpp")
 
 # Создание исполняемых файлов для каждого теста

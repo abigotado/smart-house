@@ -4,6 +4,9 @@
 #include "../../../shared/include/activatable.h"
 #include "../../../shared/include/measurable.h"
 #include "../../../temperature_manager/include/temperature_manager.h"
+#include <shared_mutex>
+#include <atomic>
+#include <future>
 
 namespace smart_house {
 
@@ -12,8 +15,10 @@ namespace smart_house {
  */
 class SmartKettle : public Device, public IActivatable, public IMeasurable {
     public:
-        SmartKettle(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS)
-            : Device(name), temp_manager_(unit) {};
+        SmartKettle(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS);
+        SmartKettle(const SmartKettle& other);
+        SmartKettle(SmartKettle&& other) noexcept;
+        SmartKettle& operator=(SmartKettle&& other) noexcept;
         
         // Интерфейс IActivatable
         void turn_on() noexcept override;
@@ -38,11 +43,16 @@ class SmartKettle : public Device, public IActivatable, public IMeasurable {
         std::shared_ptr<Device> clone() const override;
 
     private:
-        IActivatable::PowerState power_state_ = IActivatable::PowerState::OFF;
-        double temperature_ = 20.0;
-        bool calibrated_ = true;
-        double target_temp_ = 100.0;
+        /// Постепенно нагревает чайник до целевой температуры
+        std::future<void> heat();
+        
+        mutable std::shared_mutex mutex_;  // Read-write мьютекс для защиты данных
+        std::atomic<IActivatable::PowerState> power_state_{IActivatable::PowerState::OFF};
+        std::atomic<double> temperature_{20.0};
+        std::atomic<bool> calibrated_{true};
+        std::atomic<double> target_temp_{100.0};
         TemperatureManager temp_manager_;
+        mutable std::string unit_string_cache_;  // Кэш для строки единицы измерения
 };
 
 } // namespace smart_house 

@@ -90,14 +90,14 @@ class Device {
     --
     + enum DeviceStatus { ONLINE, OFFLINE }
     - operator=(const Device&) = delete
-    + Device(Device&&) = default
-    + operator=(Device&&) = default
+    + Device(Device&&) noexcept
+    + operator=(Device&&) noexcept
 }
 
 abstract class Object {
     --
     + ~Object()
-    + {abstract} to_string() : string
+    + {abstract} [[nodiscard]] to_string() const : string
     --
     # Object()
 }
@@ -142,6 +142,8 @@ class VacuumCleaner {
     - battery_level_ : int
     --
     + VacuumCleaner(name)
+    + VacuumCleaner(VacuumCleaner&&) noexcept
+    + operator=(VacuumCleaner&&) noexcept
     + clone() : shared_ptr<Device>
     + turn_on() : void
     + turn_off() : void
@@ -155,6 +157,8 @@ class SmartLight {
     - brightness_ : int
     --
     + SmartLight(name)
+    + SmartLight(SmartLight&&) noexcept
+    + operator=(SmartLight&&) noexcept
     + clone() : shared_ptr<Device>
     + turn_on() : void
     + turn_off() : void
@@ -170,6 +174,8 @@ class Thermometer {
     - temp_manager_ : TemperatureManager
     --
     + Thermometer(name, unit = CELSIUS)
+    + Thermometer(Thermometer&&) noexcept
+    + operator=(Thermometer&&) noexcept
     + clone() : shared_ptr<Device>
     + read_value() : double
     + get_unit() : const string&
@@ -179,13 +185,18 @@ class Thermometer {
 }
 
 class SmartKettle {
-    - power_state_ : PowerState
-    - temperature_ : double
-    - calibrated_ : bool
-    - target_temp_ : double
+    - mutable mutex_ : shared_mutex
+    - power_state_ : atomic<PowerState>
+    - temperature_ : atomic<double>
+    - calibrated_ : atomic<bool>
+    - target_temp_ : atomic<double>
     - temp_manager_ : TemperatureManager
+    - mutable unit_string_cache_ : string
     --
     + SmartKettle(name, unit = CELSIUS)
+    + SmartKettle(other)
+    + SmartKettle(SmartKettle&&) noexcept
+    + operator=(SmartKettle&&) noexcept
     + clone() : shared_ptr<Device>
     + turn_on() : void
     + turn_off() : void
@@ -197,6 +208,8 @@ class SmartKettle {
     + set_target_temperature(temp) : void
     + set_temperature_unit(unit) : void
     + to_string() : string
+    --
+    # heat() : future<void>
 }
 
 ' Оптимизированное размещение для заполнения A4

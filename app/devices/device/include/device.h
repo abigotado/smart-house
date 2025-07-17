@@ -10,11 +10,6 @@
 namespace smart_house {
 
 /**
- * @brief Генерирует UUID для устройств
- */
-std::string generate_device_uuid();
-
-/**
  * @brief Базовый класс для всех устройств умного дома
  */
 class Device : public Object {
@@ -30,9 +25,9 @@ class Device : public Object {
             // Запрещаем присваивание копированием
             Device& operator=(const Device&) = delete;
             
-            // Разрешаем перемещение
-            Device(Device&&) = default;
-            Device& operator=(Device&&) = default;
+            // Разрешаем перемещение (с генерацией нового ID)
+            Device(Device&& other) noexcept;
+            Device& operator=(Device&& other) noexcept;
 
             [[nodiscard]] const std::string& get_id() const noexcept;
             [[nodiscard]] const std::string& get_name() const noexcept;
@@ -43,8 +38,8 @@ class Device : public Object {
             virtual std::shared_ptr<Device> clone() const = 0;
 
         protected:
-            const std::string id_;
-            const std::string name_;
+            std::string id_;
+            std::string name_;
             DeviceStatus status_ = DeviceStatus::OFFLINE;
     };
 

@@ -1,0 +1,56 @@
+[
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/temperature_manager",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/temperature_manager.dir/source/temperature_manager.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/source/temperature_manager.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/source/temperature_manager.cpp",
+  "output": "app/temperature_manager/CMakeFiles/temperature_manager.dir/source/temperature_manager.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/shared",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/shared.dir/source/uuid.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/shared/source/uuid.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/shared/source/uuid.cpp",
+  "output": "app/shared/CMakeFiles/shared.dir/source/uuid.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/devices/device",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/device.dir/source/device.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/devices/device/source/device.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/devices/device/source/device.cpp",
+  "output": "app/devices/device/CMakeFiles/device.dir/source/device.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/devices/vacuum_cleaner",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/devices/vacuum_cleaner/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/vacuum_cleaner.dir/source/vacuum_cleaner.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/devices/vacuum_cleaner/source/vacuum_cleaner.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/devices/vacuum_cleaner/source/vacuum_cleaner.cpp",
+  "output": "app/devices/vacuum_cleaner/CMakeFiles/vacuum_cleaner.dir/source/vacuum_cleaner.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/devices/smart_light",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_light/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/smart_light.dir/source/smart_light.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/devices/smart_light/source/smart_light.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_light/source/smart_light.cpp",
+  "output": "app/devices/smart_light/CMakeFiles/smart_light.dir/source/smart_light.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/devices/thermometer",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/devices/thermometer/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -I/Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/thermometer.dir/source/thermometer.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/devices/thermometer/source/thermometer.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/devices/thermometer/source/thermometer.cpp",
+  "output": "app/devices/thermometer/CMakeFiles/thermometer.dir/source/thermometer.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/devices/smart_kettle",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_kettle/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -I/Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/smart_kettle.dir/source/smart_kettle.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/devices/smart_kettle/source/smart_kettle.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_kettle/source/smart_kettle.cpp",
+  "output": "app/devices/smart_kettle/CMakeFiles/smart_kettle.dir/source/smart_kettle.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/speaker",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/speaker/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/vacuum_cleaner/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_light/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/thermometer/include -I/Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_kettle/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/speaker.dir/source/speaker.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/speaker/source/speaker.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/speaker/source/speaker.cpp",
+  "output": "app/speaker/CMakeFiles/speaker.dir/source/speaker.cpp.o"
+},
+{
+  "directory": "/Users/Abigotado/CPPProjects/smart-house/build/app/home",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/Abigotado/CPPProjects/smart-house/app/home/include -I/Users/Abigotado/CPPProjects/smart-house/app/speaker/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/device/include -I/Users/Abigotado/CPPProjects/smart-house/app/shared/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/vacuum_cleaner/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_light/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/thermometer/include -I/Users/Abigotado/CPPProjects/smart-house/app/temperature_manager/include -I/Users/Abigotado/CPPProjects/smart-house/app/devices/smart_kettle/include -std=c++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o CMakeFiles/home.dir/source/smart_home.cpp.o -c /Users/Abigotado/CPPProjects/smart-house/app/home/source/smart_home.cpp",
+  "file": "/Users/Abigotado/CPPProjects/smart-house/app/home/source/smart_home.cpp",
+  "output": "app/home/CMakeFiles/home.dir/source/smart_home.cpp.o"
+}
+]

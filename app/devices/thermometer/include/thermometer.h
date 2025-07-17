@@ -14,6 +14,9 @@ class Thermometer : public Device, public IMeasurable {
         Thermometer(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS) 
             : Device(name), temp_manager_(unit) {};
         
+        Thermometer(Thermometer&& other) noexcept;
+        Thermometer& operator=(Thermometer&& other) noexcept;
+        
         // Интерфейс IMeasurable
         double read_value() const noexcept override;
         const std::string& get_unit() const noexcept override;

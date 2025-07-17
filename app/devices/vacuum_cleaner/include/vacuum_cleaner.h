@@ -12,6 +12,9 @@ class VacuumCleaner : public Device, public IActivatable {
     public:
         using Device::Device;
 
+        VacuumCleaner(VacuumCleaner&& other) noexcept;
+        VacuumCleaner& operator=(VacuumCleaner&& other) noexcept;
+
         // Интерфейс IActivatable
         void turn_on() noexcept override;
         void turn_off() noexcept override;
