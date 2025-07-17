@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(app)
 
 # Примеры (опционально) - закомментировано, пока нет CMakeLists.txt
-# add_subdirectory(examples)
+add_subdirectory(examples)
 
 # Тесты (опционально)
     add_subdirectory(tests)

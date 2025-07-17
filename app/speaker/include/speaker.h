@@ -25,13 +25,17 @@ public:
     /**
      * @brief Структура с данными комнаты
      */
-    struct Room {
+    struct Room : public Object {
         std::string name;
         int room_number;
         RoomType room_type;
 
         Room(const std::string& name, int room_number, RoomType type)
             : name(name), room_number(room_number), room_type(type) {}
+
+        std::string to_string() const override {
+            return name + " (" + std::to_string(room_number) + ", " + Speaker::room_type_to_string(room_type) + ")";
+        }
     };
 
         /// Преобразует тип комнаты в строку

@@ -76,3 +76,8 @@ namespace smart_house {
         return ss.str();
     }
 }
+
+std::ostream& smart_house::operator<<(std::ostream& os, const SmartHome& smart_home) {
+    os << smart_home.to_string();
+    return os;
+}
