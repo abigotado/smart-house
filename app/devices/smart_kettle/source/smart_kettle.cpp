@@ -51,7 +51,8 @@ namespace smart_house {
     
     void SmartKettle::turn_on() noexcept {
         power_state_.store(IActivatable::PowerState::ON);
-        heat(); // Запускаем нагрев (в отдельном потоке)
+        // Запускаем нагрев в отдельном потоке после установки состояния
+        heat();
     }
     
     void SmartKettle::turn_off() noexcept {
@@ -97,9 +98,22 @@ namespace smart_house {
         target_temp_.store(temperature);
     }
 
-    void SmartKettle::set_temperature_unit(TemperatureUnit unit) noexcept { 
-        temp_manager_.set_unit(unit);
-        unit_string_cache_.clear(); // Очищаем кэш при изменении единицы
+    double SmartKettle::get_target_temperature() const {
+        return target_temp_.load();
+    }
+
+    void SmartKettle::set_temperature_unit(TemperatureUnit unit) noexcept {
+        std::unique_lock lock(mutex_);
+        auto old_unit = temp_manager_.get_unit();
+        if (old_unit != unit) {
+            // Конвертируем значения
+            double temp = temperature_.load();
+            double target = target_temp_.load();
+            temperature_.store(TemperatureManager::convert(temp, old_unit, unit));
+            target_temp_.store(TemperatureManager::convert(target, old_unit, unit));
+            temp_manager_.set_unit(unit);
+            unit_string_cache_.clear();
+        }
     }
 
     std::string SmartKettle::to_string() const {
@@ -131,7 +145,7 @@ namespace smart_house {
                     // Увеличиваем на 1 градус атомарно
                     temperature_.store(current_temp + 1.0);
                     // Ждем 1 секунду
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // уменьшено
                 }
             } catch (...) {
                 power_state_.store(IActivatable::PowerState::OFF);

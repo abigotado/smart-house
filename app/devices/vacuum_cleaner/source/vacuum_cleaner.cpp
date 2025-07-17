@@ -129,7 +129,7 @@ namespace smart_house {
                     }
                     
                     // Имитируем работу - ждем 2 секунды
-                    std::this_thread::sleep_for(std::chrono::seconds(2));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // уменьшено
                 }
             } catch (...) {
                 power_state_.store(IActivatable::PowerState::OFF);
@@ -153,7 +153,7 @@ namespace smart_house {
                     battery_level_.store(std::min(100, current_battery + 5));
                     
                     // Имитируем зарядку - ждем 1 секунду
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // уменьшено
                 }
             } catch (...) {
                 // Игнорируем исключения при зарядке

@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_all.hpp>
-#include "app/devices/smart_kettle/include/smart_kettle.h"
+#include "../../../app/devices/smart_kettle/include/smart_kettle.h"
 #include <thread>
 #include <chrono>
 

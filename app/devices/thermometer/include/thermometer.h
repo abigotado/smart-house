@@ -11,10 +11,7 @@ namespace smart_house {
  */
 class Thermometer : public Device, public IMeasurable {
     public:
-        Thermometer(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS) 
-            : Device(name), temp_manager_(unit) {
-            simulate_measurement(); // Выполняем первое измерение
-        };
+        Thermometer(const std::string& name, TemperatureUnit unit = TemperatureUnit::CELSIUS);
         
         /// Конструктор копирования
         Thermometer(const Thermometer& other);
@@ -30,7 +27,7 @@ class Thermometer : public Device, public IMeasurable {
         
         std::string to_string() const override;
         
-        /// Изменяет единицу измерения температуры
+        /// Изменяет единицу измерения температуры (конвертирует текущее значение)
         void set_temperature_unit(TemperatureUnit unit) noexcept;
 
         /// Создает копию устройства

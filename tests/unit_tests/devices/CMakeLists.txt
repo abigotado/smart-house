@@ -2,45 +2,79 @@
 
 include(Catch)
 
-# Поиск исходных файлов тестов устройств
-file(GLOB DEVICE_TEST_SOURCES "*.cpp")
+# Тесты для устройств
+add_executable(test_smart_light test_smart_light.cpp)
+add_executable(test_thermometer test_thermometer.cpp)
+add_executable(test_vacuum_cleaner test_vacuum_cleaner.cpp)
+add_executable(test_smart_kettle test_smart_kettle.cpp)
 
-# Создание исполняемых файлов для каждого теста устройства
-foreach(test_source ${DEVICE_TEST_SOURCES})
-    # Получение имени файла без расширения
-    get_filename_component(test_name ${test_source} NAME_WE)
-    
-    # Создание исполняемого файла теста
-    add_executable(${test_name} ${test_source})
-    
-    # Добавление путей включения
-    target_include_directories(${test_name} PRIVATE 
-        ${CMAKE_SOURCE_DIR}
-        ${CMAKE_SOURCE_DIR}/app
-    )
-    
-    # Линковка с библиотеками устройств и Catch2
-    target_link_libraries(${test_name} PRIVATE 
-        smart_kettle
-        smart_light
-        thermometer
-        vacuum_cleaner
-        device
-        shared
-        temperature_manager
-        Catch2::Catch2WithMain
-    )
-    
-    # Установка свойств
-    set_target_properties(${test_name} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests/unit_tests/devices
-    )
-    
-    # Добавление теста в CTest через Catch2
-    catch_discover_tests(${test_name})
-    
-    message(STATUS "Added device test: ${test_name}")
-endforeach()
+# Настройка для SmartLight
+target_include_directories(test_smart_light PRIVATE
+    ../../../app/devices/smart_light/include
+    ../../../app/devices/device/include
+    ../../../app/shared/include
+)
+
+target_link_libraries(test_smart_light
+    smart_light
+    device
+    shared
+    Catch2::Catch2WithMain
+)
+
+# Настройка для Thermometer
+target_include_directories(test_thermometer PRIVATE
+    ../../../app/devices/thermometer/include
+    ../../../app/devices/device/include
+    ../../../app/shared/include
+    ../../../app/temperature_manager/include
+)
+
+target_link_libraries(test_thermometer
+    thermometer
+    device
+    shared
+    temperature_manager
+    Catch2::Catch2WithMain
+)
+
+# Настройка для VacuumCleaner
+target_include_directories(test_vacuum_cleaner PRIVATE
+    ../../../app/devices/vacuum_cleaner/include
+    ../../../app/devices/device/include
+    ../../../app/shared/include
+)
+
+target_link_libraries(test_vacuum_cleaner
+    vacuum_cleaner
+    device
+    shared
+    Catch2::Catch2WithMain
+)
+
+# Настройка для SmartKettle
+target_include_directories(test_smart_kettle PRIVATE
+    ../../../app/devices/smart_kettle/include
+    ../../../app/devices/device/include
+    ../../../app/shared/include
+    ../../../app/temperature_manager/include
+)
+
+target_link_libraries(test_smart_kettle
+    smart_kettle
+    device
+    shared
+    temperature_manager
+    Catch2::Catch2WithMain
+)
+
+# Добавляем тесты в CTest
+include(CTest)
+include(Catch)
+catch_discover_tests(test_smart_light)
+catch_discover_tests(test_thermometer)
+catch_discover_tests(test_vacuum_cleaner)
+catch_discover_tests(test_smart_kettle)
 
 # Информация
 message(STATUS "Device tests will be built in: ${CMAKE_BINARY_DIR}/tests/unit_tests/devices") 

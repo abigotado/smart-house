@@ -36,7 +36,10 @@ class SmartKettle : public Device, public IActivatable, public IMeasurable {
         /// Устанавливает целевую температуру нагрева
         void set_target_temperature(double temperature);
         
-        /// Изменяет единицу измерения температуры
+        /// Возвращает целевую температуру нагрева
+        [[nodiscard]] double get_target_temperature() const;
+        
+        /// Изменяет единицу измерения температуры (конвертирует текущее и целевое значение)
         void set_temperature_unit(TemperatureUnit unit) noexcept;
 
         /// Создает копию устройства
