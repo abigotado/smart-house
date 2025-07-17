@@ -52,12 +52,12 @@ class Speaker {
     + get_room_type() : RoomType
     + get_room() : const Room&
     + get_device_count() : size_t
-    + move_to_room(new_room) : void
     + to_string() : string
     --
     - Speaker(Speaker&&) = default
     - operator=(Speaker&&) = default
     - rename(new_name) : bool
+    - move_to_room(new_room) : void
     - Speaker(const Speaker&) = delete
     - operator=(const Speaker&) = delete
 }

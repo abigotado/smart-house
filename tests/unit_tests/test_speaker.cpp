@@ -42,14 +42,6 @@ TEST_CASE("Speaker basic functionality", "[speaker]") {
         REQUIRE(speaker.get_device_count() == 0);
     }
     
-    SECTION("Moving to different room") {
-        Speaker::Room new_room{"Новая комната", 2, Speaker::RoomType::KITCHEN};
-        speaker.move_to_room(new_room);
-        
-        REQUIRE(speaker.get_room().name == "Новая комната");
-        REQUIRE(speaker.get_room_type() == Speaker::RoomType::KITCHEN);
-    }
-    
     SECTION("Getting all devices") {
         auto device1 = std::make_shared<SmartLight>("Лампа1");
         auto device2 = std::make_shared<SmartLight>("Лампа2");

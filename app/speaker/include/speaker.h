@@ -68,9 +68,6 @@ public:
     [[nodiscard]] std::size_t get_device_count() const noexcept;
     [[nodiscard]] const Room& get_room() const noexcept;
     
-    /// Перемещает колонку в другую комнату
-    void move_to_room(const Room& new_room);
-    
     [[nodiscard]] std::string to_string() const override;
 
     /// Разрешаем SmartHome доступ к приватным полям
@@ -80,6 +77,9 @@ private:
     /// Перемещение (фактически доступно только для SmartHome)
     Speaker(Speaker&&) = default;
     Speaker& operator=(Speaker&&) = default;
+    
+    /// Перемещает колонку в другую комнату (приватный, вызывается только из SmartHome)
+    void move_to_room(const Room& new_room);
     
     /// Переименовывает колонку
     bool rename(const std::string& new_name);
