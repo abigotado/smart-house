@@ -128,7 +128,7 @@ namespace smart_house {
                         break;
                     }
                     
-                    // Имитируем работу - ждем 2 секунды
+                    // Имитируем работу - ждем 10 миллисекунд
                     std::this_thread::sleep_for(std::chrono::milliseconds(10)); // уменьшено
                 }
             } catch (...) {

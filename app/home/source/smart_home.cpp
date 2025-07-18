@@ -30,7 +30,6 @@ namespace smart_house {
         if (speakers_.find(name) == speakers_.end()) {
             return false;
         }
-        // speakers_[name].move_to_room(new_room);
         speakers_.at(name).move_to_room(new_room);
         return true;
     }

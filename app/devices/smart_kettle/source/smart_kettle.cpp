@@ -144,8 +144,8 @@ namespace smart_house {
                     }
                     // Увеличиваем на 1 градус атомарно
                     temperature_.store(current_temp + 1.0);
-                    // Ждем 1 секунду
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // уменьшено
+                    // Ждем 10 миллисекунд
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 }
             } catch (...) {
                 power_state_.store(IActivatable::PowerState::OFF);
